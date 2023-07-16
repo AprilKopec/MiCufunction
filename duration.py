@@ -11,7 +11,13 @@ class Duration:
         return []
 
     def prefix(self) -> str:
-        return f'execute if score t {self.parent.objective.name} matches {self.parent.time.ticks}..{self.parent.time+self.duration} run tellraw @a "{line[4:]}"'
+        preprefix = self.parent.prefix().split()
+        
+        # This is almost certainly not the correct way to do this
+        assert preprefix[-5] == "if", "Issue with duration's parent"
+        assert preprefix[-3] == "matches", "Issue with duration's parent"
+        assert preprefix[-2].isdigits() or (preprefix[-2][0] == '-' and preprefix[-2][1:].isdigits()), "Issue with duration's parent"
+        assert preprefix[-1] == "run", "Issue with duration's parent"
 
     def end(self)-> list[str]:
         return []
