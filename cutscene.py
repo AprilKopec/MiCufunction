@@ -11,6 +11,7 @@ class Cutscene:
         self.time = Time(1)
         self.latest_time = Time(1)
         self.objective = Objective(args[1])
+        self.text = self.begin()
         pass
 
     def begin(self) -> list[str]:
@@ -24,7 +25,6 @@ class Cutscene:
         ]
 
     def end(self):
-
         self.latest_time = max(self.latest_time, self.time)
         return [
           "",

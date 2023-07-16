@@ -5,6 +5,7 @@ class Duration:
     def __init__(self, stack, line, args) -> None:
         self.parent = stack[-1]
         self.duration = Time(args[1])
+        self.text = self.begin()
 
     def begin(self) -> list[str]:
         return []

@@ -30,21 +30,13 @@ class Program:
 
         if line != "}":
             command_type = get_command_type(line, args)
+            item = command_type(self.stack, line, args)
 
             if command_type.takes_block:
                 assert(args[-1] == "{", f"No {{ on line {line_num}")
-                item = command_type(self.stack, line, args)
-                for text in item.begin():
-                    self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
                 self.stack.append(item)
-
-            else:
-                item = command_type(self.stack, line, args)
-                for text in item.text:
-                    self.outlines.append(self.stack[-1].prefix() + " " + text)
-        else: # }
-            item = self.stack.pop()
-            for text in item.end():
+            
+            for text in item.text():
                 self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
 
     def walkStack(self, typ: type):
