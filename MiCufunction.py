@@ -27,17 +27,19 @@ class Program:
     def add_command(self, line: str, line_num: int):
         line = line.strip()
         args = line.split(' ')
+        command_type = get_command_type(line, args)
 
-        if line != "}":
-            command_type = get_command_type(line, args)
+        try:
             item = command_type(self.stack, line, args)
+        except AssertionError as e:
+            raise AssertionError(f"Error on line {line_num}: {e.args[0]}")
 
-            if command_type.takes_block:
-                assert(args[-1] == "{", f"No {{ on line {line_num}")
-                self.stack.append(item)
-            
-            for text in item.text:
-                self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
+        if command_type.takes_block:
+            assert(args[-1] == "{", f"No {{ on line {line_num}")
+            self.stack.append(item)
+        
+        for text in item.text:
+            self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
 
     def walkStack(self, typ: type):
         for item in reversed(self.stack):
