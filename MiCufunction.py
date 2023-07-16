@@ -19,24 +19,18 @@ class Program:
 
     def add_command(self, line: str):
         line = line.strip()
-
-        if line == "" or line.startswith("#"):
-            return
-
         args = line.split(' ')
+
         if line == "}":
             item = self.stack.pop()
             for text in item.end():
                 if text is not None:
                     self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
         else:
-            if line == "" or line.startswith("#"):
-                command_type = Comment
-            else:
-                command_type = supported_commands[args[0]]
+            command_type = supported_commands[args[0]]
             if command_type.takes_block:
                 assert(args[-1] == "{")
-                item = command_type(args)
+                item = command_type(self.stack, line, args)
                 for text in item.begin():
                     if text is not None:
                         self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
@@ -44,7 +38,7 @@ class Program:
             else:
                 text = command_type(self.stack, line, args).text
                 if text is not None:
-                     self.outlines.append(self.stack[-1].prefix() + " " + text)
+                        self.outlines.append(self.stack[-1].prefix() + " " + text)
 
     def walkStack(self, typ: type):
         for item in reversed(self.stack):

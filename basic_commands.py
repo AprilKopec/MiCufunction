@@ -1,15 +1,18 @@
 from cutscene import Cutscene
 from utils import Time
 
+def rest(string):
+    return string.split(" ", 1)[1]
+
 class Say:
     takes_block = False
     def __init__(self, stack: list, line: str, args: list[str]) -> None:
-      self.text = f'tellraw @a "{line[4:]}"'
+      self.text = f'tellraw @a "{rest(line)}"'
 
 class Command:
     takes_block = False
     def __init__(self, stack: list, line: str, args: list[str]) -> None:
-      self.text = line[8:]
+      self.text = rest(line)
 
 class Wait:
     takes_block = False
@@ -22,4 +25,4 @@ class Wait:
 class Comment:
    takes_block = False
    def __init__(self, stack: list, line: str, args: list[str]) -> None:
-      self.text = line.strip()
+        self.text = line.strip()

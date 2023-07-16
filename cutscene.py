@@ -7,7 +7,7 @@ class Cutscene:
     takes_block = True
     parent = None
     can_wait = True
-    def __init__(self, stack, args) -> None:
+    def __init__(self, stack, line, args) -> None:
         self.time = Time(1)
         self.latest_time = Time(1)
         self.objective = Objective(args[1])

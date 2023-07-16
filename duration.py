@@ -2,7 +2,7 @@ from utils import Time
 
 class Duration:
     takes_block = True
-    def __init__(self, stack, args) -> None:
+    def __init__(self, stack, line, args) -> None:
         self.parent = stack[-1]
         self.duration = Time(args[1])
 
