@@ -12,6 +12,12 @@ supported_commands = {"cutscene": Cutscene,
                       "command": Command,
                       "wait": Wait}
 
+def get_command_type(line, args):
+    if line == "" or line.startswith("#"):
+        command_type = Comment
+    else:
+        command_type = supported_commands[args[0]]
+
 class Program:
     def __init__(self) -> None:
         self.stack = []
@@ -21,17 +27,9 @@ class Program:
         line = line.strip()
         args = line.split(' ')
 
-        if line == "}":
-            item = self.stack.pop()
-            for text in item.end():
-                if text is not None:
-                    self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
-        else:
-            if line == "" or line.startswith("#"):
-                command_type = Comment
-            else:
-                command_type = supported_commands[args[0]]
-
+        if line != "}":
+            command_type = get_command_type(line, args)
+            
             if command_type.takes_block:
                 assert(args[-1] == "{")
                 item = command_type(self.stack, line, args)
@@ -39,10 +37,17 @@ class Program:
                     if text is not None:
                         self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
                 self.stack.append(item)
+
             else:
                 text = command_type(self.stack, line, args).text
                 if text is not None:
                         self.outlines.append(self.stack[-1].prefix() + " " + text)
+        else: 
+            assert(line == "}")
+            item = self.stack.pop()
+            for text in item.end():
+                if text is not None:
+                    self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
 
     def walkStack(self, typ: type):
         for item in reversed(self.stack):
