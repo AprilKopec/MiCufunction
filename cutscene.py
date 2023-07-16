@@ -1,8 +1,5 @@
 from utils import Time, Objective
 
-# This is not the right way to do this
-from MiCufunction import OUTNAME
-
 class Cutscene:
     takes_block = True
     parent = None
@@ -33,7 +30,7 @@ class Cutscene:
           f'execute if score endCutscene {self.objective.name} matches 1 run scoreboard players set t {self.objective.name} 0',
           "",
           "### Run cutscene every tick ###",
-          f"execute unless score endCutscene {self.objective.name} matches 1 run schedule function {OUTNAME} 1t append"
+          f"execute unless score endCutscene {self.objective.name} matches 1 run schedule function OUTNAME 1t append"
         ]
 
     def prefix(self) -> str:
