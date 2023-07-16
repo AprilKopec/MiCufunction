@@ -67,7 +67,7 @@ with open(filename, 'r') as infile:
             if stack[-1] == "cutscene":
                 outlines.append(f"execute if score t {ObjectiveName} matches {time} run {line[8:]}")
             elif stack[-1] == "duration":
-                outlines.append(f'execute if score t {ObjectiveName} matches {time}..{time+duration}')
+                outlines.append(f'execute if score t {ObjectiveName} matches {time}..{time+duration} run {line[8:]}')
 
         if split[0] == "wait":
             if stack[-1] == "cutscene":
