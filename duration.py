@@ -1,4 +1,4 @@
-from MiCufunction import Time
+from utils import Time
 
 class Duration:
     takes_block = True

@@ -1,5 +1,4 @@
-from MiCufunction import Time
-from MiCufunction import Objective
+from utils import Time, Objective
 
 # This is not the right way to do this
 from MiCufunction import OUTNAME
