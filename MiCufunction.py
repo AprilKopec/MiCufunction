@@ -1,27 +1,10 @@
 import sys
 from cutscene import Cutscene
 from duration import Duration
-from utils import Objective, Time
+from utils import Time
+from basic_commands import Say, Command, Wait, Comment
 
 OUTNAME = sys.argv[2]
-
-class Say:
-    takes_block = False
-    def __init__(self, stack: list, line: str, args: list[str]) -> None:
-      self.text = f'tellraw @a "{line[4:]}"'
-
-class Command:
-    takes_block = False
-    def __init__(self, stack: list, line: str, args: list[str]) -> None:
-      self.text = line[8:]
-
-class Wait:
-    takes_block = False
-    def __init__(self, stack: list, line: str, args: list[str]) -> None:
-        cutscene = stack[-1]
-        assert(isinstance(cutscene, Cutscene))
-        cutscene.time += Time(args[1])
-        self.text = None
 
 supported_commands = {"cutscene": Cutscene,
                       "duration": Duration,
@@ -47,7 +30,10 @@ class Program:
                 if text is not None:
                     self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
         else:
-            command_type = supported_commands[args[0]]
+            if line == "" or line.startswith("#"):
+                command_type = Comment
+            else:
+                command_type = supported_commands[args[0]]
             if command_type.takes_block:
                 assert(args[-1] == "{")
                 item = command_type(args)
@@ -66,15 +52,17 @@ class Program:
                 return item
 
 
-FILENAME = sys.argv[1]
-if(FILENAME.split('.')[-1].lower() != "micufunction"):
-    raise Exception(".micufunction file not provided")
+def main():
+    FILENAME = sys.argv[1]
+    if(FILENAME.split('.')[-1].lower() != "micufunction"):
+        raise Exception(".micufunction file not provided")
 
+    with open(FILENAME, 'r') as infile:
+        lines = infile.readlines()
+        program = Program()
+        for line in lines:
+            program.add_command(line)
+        for line in program.outlines:
+            print(line)
 
-with open(FILENAME, 'r') as infile:
-    lines = infile.readlines()
-    program = Program()
-    for line in lines:
-        program.add_command(line)
-    for line in program.outlines:
-        print(line)
+main()
