@@ -36,7 +36,7 @@ class Program:
                 assert(args[-1] == "{", f"No {{ on line {line_num}")
                 self.stack.append(item)
             
-            for text in item.text():
+            for text in item.text:
                 self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
 
     def walkStack(self, typ: type):
