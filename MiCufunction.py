@@ -1,11 +1,11 @@
 import sys
-from cutscene import Cutscene
+from function import Function
 from duration import Duration
 from conditional import If
 from close_block import Close_Block
 from basic_commands import Say, Command, Wait, Comment
 
-supported_commands = {"cutscene": Cutscene,
+supported_commands = {"function": Function,
                       "duration": Duration,
                       "say": Say,
                       "command": Command,
