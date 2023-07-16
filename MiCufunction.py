@@ -3,8 +3,6 @@ from cutscene import Cutscene
 from duration import Duration
 from basic_commands import Say, Command, Wait, Comment, Close_Block
 
-OUTNAME = sys.argv[2]
-
 supported_commands = {"cutscene": Cutscene,
                       "duration": Duration,
                       "say": Say,
@@ -48,14 +46,15 @@ class Program:
 
 
 def main():
-    FILENAME = sys.argv[1]
+    # FILENAME = sys.argv[1]
+    FILENAME = "example.micufunction"
     if(FILENAME.split('.')[-1].lower() != "micufunction"):
         raise Exception(".micufunction file not provided")
 
     with open(FILENAME, 'r') as infile:
         lines = infile.readlines()
         program = Program()
-        for i in len(lines):
+        for i in range(len(lines)):
             program.add_command(lines[i], i)
         for line in program.outlines:
             print(line)
