@@ -4,7 +4,7 @@ class Close_Block:
     takes_block = False
     def __init__(self, stack, line, args) -> None:
         # Xero I am sorry
-        assert line in ["}", "} else {"], "Incorrect usage of }"
+        assert args == ["}"] or args == ["}","else","{"], "Incorrect usage of }"
         if line == "}":
             self.item = stack.pop()
             self.text = self.item.end()
