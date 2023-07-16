@@ -1,38 +1,36 @@
-from utils import Time, Objective
+from utils import Time
 
 class If:
     takes_block = True
     def __init__(self, stack, line, args) -> None:
+        self.parent = stack[-1]
         self.time = Time(1)
         self.latest_time = Time(1)
-        self.objective = Objective(args[1])
+        self.objective = self.parent.objective
         self.text = self.begin()
-        self.parent = stack[-1]
+        self.condition = " ".join(args[1:-1])
 
         self.timer_number = self.parent.timer_number + 1
-        self.timer_name = "t" + self.timer_number
+        self.timer_name = "t" + str(self.timer_number)
+        self.pause_name = "pause" + str(self.timer_number)
+        self.end_name = "end" + str(self.timer_number)
 
     def begin(self) -> list[str]:
         return [
-          "### Cutscene setup ###",
-          f"scoreboard objectives add {self.objective.name} dummy",
-          f"scoreboard players add t {self.objective.name} 1",
-          f"scoreboard players set endCutscene {self.objective.name} 0",
+          f"scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 1"
+          f"execute unless score {self.pause_name} {self.objective.name} matches 1 run scoreboard players add {self.timer_name} {self.objective.name} 1",
+          f"scoreboard players set {self.end_name} {self.objective.name} 0",
           "",
-          "### Cutscene ###"
         ]
 
     def end(self):
         self.latest_time = max(self.latest_time, self.time)
         return [
           "",
-          "### Cutscene Cleanup ###",
-          f'execute if score t {self.objective.name} matches {self.latest_time} run scoreboard players set endCutscene {self.objective.name} 1',
-          f'execute if score endCutscene {self.objective.name} matches 1 run scoreboard players set t {self.objective.name} 0',
-          "",
-          "### Run cutscene every tick ###",
-          f"execute unless score endCutscene {self.objective.name} matches 1 run schedule function OUTNAME 1t append"
+          f'execute if score {self.timer_name} {self.objective.name} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective.name} 1',
+          f'execute if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.timer_name} {self.objective.name} 0',
+          f'execute if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 0',
         ]
 
     def prefix(self) -> str:
-        return f"execute if score t {self.objective.name} matches {self.time} run"
+        return f"    {self.parent.prefix()} {self.condition} if score {self.timer_name} {self.objective.name} matches {self.time} run"

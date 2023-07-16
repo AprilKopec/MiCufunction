@@ -10,13 +10,15 @@ class Cutscene:
         
         self.timer_number = 0
         self.timer_name = "t"
+        self.pause_name = "pause"
+        self.end_name = "endCutscene"
 
     def begin(self) -> list[str]:
         return [
           "### Cutscene setup ###",
           f"scoreboard objectives add {self.objective.name} dummy",
-          f"scoreboard players add {'t' + self.timer_number} {self.objective.name} 1",
-          f"scoreboard players set endCutscene {self.objective.name} 0",
+          f"execute unless score {self.pause_name} {self.objective.name} matches 1 run scoreboard players add {self.timer_name} {self.objective.name} 1",
+          f"scoreboard players set {self.end_name} {self.objective.name} 0",
           "",
           "### Cutscene ###"
         ]
@@ -26,11 +28,11 @@ class Cutscene:
         return [
           "",
           "### Cutscene Cleanup ###",
-          f'execute if score {self.timer_name} {self.objective.name} matches {self.latest_time} run scoreboard players set endCutscene {self.objective.name} 1',
-          f'execute if score endCutscene {self.objective.name} matches 1 run scoreboard players set {self.timer_name} {self.objective.name} 0',
+          f'execute if score {self.timer_name} {self.objective.name} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective.name} 1',
+          f'execute if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.timer_name} {self.objective.name} 0',
           "",
           "### Run cutscene every tick ###",
-          f"execute unless score endCutscene {self.objective.name} matches 1 run schedule function OUTNAME 1t append"
+          f"execute unless score {self.end_name} {self.objective.name} matches 1 run schedule function OUTNAME 1t append"
         ]
 
     def prefix(self) -> str:
