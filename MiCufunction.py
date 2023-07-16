@@ -27,7 +27,11 @@ class Program:
                 if text is not None:
                     self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
         else:
-            command_type = supported_commands[args[0]]
+            if line == "" or line.startswith("#"):
+                command_type = Comment
+            else:
+                command_type = supported_commands[args[0]]
+
             if command_type.takes_block:
                 assert(args[-1] == "{")
                 item = command_type(self.stack, line, args)
