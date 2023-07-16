@@ -1,7 +1,7 @@
 import sys
 from cutscene import Cutscene
 from duration import Duration
-from basic_commands import Say, Command, Wait, Comment
+from basic_commands import Say, Command, Wait, Comment, Close_Block
 
 OUTNAME = sys.argv[2]
 
@@ -9,7 +9,8 @@ supported_commands = {"cutscene": Cutscene,
                       "duration": Duration,
                       "say": Say,
                       "command": Command,
-                      "wait": Wait}
+                      "wait": Wait,
+                      "}": Close_Block}
 
 def get_command_type(line, args):
     if line == "" or line.startswith("#"):
@@ -34,20 +35,17 @@ class Program:
                 assert(args[-1] == "{", f"No {{ on line {line_num}")
                 item = command_type(self.stack, line, args)
                 for text in item.begin():
-                    if text is not None:
-                        self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
+                    self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
                 self.stack.append(item)
 
             else:
                 item = command_type(self.stack, line, args)
                 for text in item.text:
-                    if text is not None:
-                        self.outlines.append(self.stack[-1].prefix() + " " + text)
+                    self.outlines.append(self.stack[-1].prefix() + " " + text)
         else: # }
             item = self.stack.pop()
             for text in item.end():
-                if text is not None:
-                    self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
+                self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
 
     def walkStack(self, typ: type):
         for item in reversed(self.stack):
