@@ -1,7 +1,6 @@
 import sys
 from cutscene import Cutscene
 from duration import Duration
-from utils import Time
 from basic_commands import Say, Command, Wait, Comment
 
 OUTNAME = sys.argv[2]
@@ -17,6 +16,7 @@ def get_command_type(line, args):
         command_type = Comment
     else:
         command_type = supported_commands[args[0]]
+    return command_type
 
 class Program:
     def __init__(self) -> None:
