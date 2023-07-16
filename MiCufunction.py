@@ -1,98 +1,164 @@
 import sys
 import re
+from functools import total_ordering
+from typing import Union
 
-filename = sys.argv[1]
-outname = sys.argv[2]
+OUTNAME = sys.argv[2]
 
-# Checks if a string is a valid scoreboard objective name
-def validate_objective_name(str):
-    return re.match(r'^[a-zA-Z0-9_.+-]+$',str) is not None
+class Objective:
+    def __init__(self, name: str) -> None:
+        if re.match(r'^[a-zA-Z0-9_.+-]+$',name) is None:
+           raise ValueError(name + "is not a valid objective name")
+        self.name = name
 
 # Takes a string which contains either an integer, or an number followed by s or t
 # If it's a plain integer or is followed by t, it is interpreted as a number of ticks
 # If it's followed by s it is interpreted as a number of seconds
-def get_time(str):
-    if str[-1] == "s":
-        return int(20*float(str[0:-1]))
-    elif str[-1] == "t":
-        return int(str[0:-1])
-    try:
-        return int(str)
-    except ValueError as e:
-        raise e(f"{str} is not in an accepted time format")
+@total_ordering
+class Time:
+    def __init__(self, time: Union[str, int]) -> None:
+        if isinstance(time, str):
+            if time[-1] == "s":
+                ticks = int(20*float(time[0:-1]))
+            elif time[-1] == "t":
+                ticks = int(time[0:-1])
+            else:
+                ticks = int(time)
+        else:
+            ticks = time
+        self.ticks = ticks
 
-if(filename.split('.')[-1].lower() != "micufunction"):
+    def __add__(self, other):
+        return Time(self.ticks + other.ticks)
+    def __lt__(self, other):
+        return self.ticks < other.ticks
+    def __eq__(self, other):
+        return self.ticks == other.ticks
+    def __str__(self) -> str:
+        return str(self.ticks)
+
+
+class Cutscene:
+    takes_block = True
+    parent = None
+    can_wait = True
+    def __init__(self, stack, args) -> None:
+        self.time = Time(1)
+        self.latest_time = Time(1)
+        self.objective = Objective(args[1])
+        pass
+
+    def begin(self) -> list[str]:
+        return [
+          "### Cutscene setup ###",
+          f"scoreboard objectives add {self.objective.name} dummy",
+          f"scoreboard players add t {self.objective.name} 1",
+          f"scoreboard players set endCutscene {self.objective.name} 0",
+          "",
+          "### Cutscene ###"
+        ]
+
+    def end(self):
+
+        self.latest_time = max(self.latest_time, self.time)
+        return [
+          "",
+          "### Cutscene Cleanup ###",
+          f'execute if score t {self.objective.name} matches {self.latest_time} run scoreboard players set endCutscene {self.objective.name} 1',
+          f'execute if score endCutscene {self.objective.name} matches 1 run scoreboard players set t {self.objective.name} 0',
+          "",
+          "### Run cutscene every tick ###",
+          f"execute unless score endCutscene {self.objective.name} matches 1 run schedule function {OUTNAME} 1t append"
+        ]
+
+    def prefix(self) -> str:
+        return f"execute if score t {self.objective.name} matches {self.time} run"
+
+class Duration:
+    takes_block = True
+    def __init__(self, stack, args) -> None:
+        self.parent = stack[-1]
+        self.duration = Time(args[1])
+
+    def begin(self) -> list[str]:
+        return []
+
+    def prefix(self) -> str:
+        return f'execute if score t {self.parent.objective.name} matches {self.parent.time.ticks}..{self.parent.time+self.duration} run tellraw @a "{line[4:]}"'
+
+    def end(self)-> list[str]:
+        return []
+
+class Say:
+    takes_block = False
+    def __init__(self, stack: list, line: str, args: list[str]) -> None:
+      self.text = f'tellraw @a "{line[4:]}"'
+
+class Command:
+    takes_block = False
+    def __init__(self, stack: list, line: str, args: list[str]) -> None:
+      self.text = line[8:]
+
+class Wait:
+    takes_block = False
+    def __init__(self, stack: list, line: str, args: list[str]) -> None:
+        cutscene = stack[-1]
+        assert(isinstance(cutscene, Cutscene))
+        cutscene.time += Time(args[1])
+        self.text = None
+
+supported_commands = {"cutscene": Cutscene,
+                      "duration": Duration,
+                      "say": Say,
+                      "command": Command,
+                      "wait": Wait}
+
+class Program:
+    def __init__(self) -> None:
+        self.stack = []
+        self.outlines = []
+
+    def add_command(self, line: str):
+        line = line.strip()
+
+        if line == "" or line.startswith("#"):
+            return
+
+        args = line.split(' ')
+        if line == "}":
+            item = self.stack.pop()
+            for text in item.end():
+                if text is not None:
+                    self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
+        else:
+            command_type = supported_commands[args[0]]
+            if command_type.takes_block:
+                assert(args[-1] == "{")
+                item = command_type(args)
+                for text in item.begin():
+                    if text is not None:
+                        self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
+                self.stack.append(item)
+            else:
+                text = command_type(self.stack, line, args).text
+                if text is not None:
+                     self.outlines.append(self.stack[-1].prefix() + " " + text)
+
+    def walkStack(self, typ: type):
+        for item in reversed(self.stack):
+            if isinstance(item, typ):
+                return item
+
+
+FILENAME = sys.argv[1]
+if(FILENAME.split('.')[-1].lower() != "micufunction"):
     raise Exception(".micufunction file not provided")
 
-outlines = []
-stack = []
 
-with open(filename, 'r') as infile:
+with open(FILENAME, 'r') as infile:
     lines = infile.readlines()
+    program = Program()
     for line in lines:
-        line = line.strip()
-        split = line.split(' ')
-
-        if split[0] == "cutscene":
-            stack.append("cutscene")
-
-            ObjectiveName = split[1]
-            if not validate_objective_name(ObjectiveName):
-                raise Exception("Invalid scoreboard objective name")
-            
-            time = 1
-
-            finish_time = 1
-            
-            outlines.append("### Cutscene setup ###")
-            outlines.append(f"scoreboard objectives add {ObjectiveName} dummy")
-            outlines.append(f"scoreboard players add t {ObjectiveName} 1")
-            outlines.append(f"scoreboard players set endCutscene {ObjectiveName} 0")
-            outlines.append("")
-            outlines.append("### Cutscene ###")
-
-        if split[0] == "duration":
-            if stack[-1] == "cutscene":
-                stack.append("duration")
-                duration = get_time(split[1])
-                finish_time = time+duration
-
-        if split[0] == "say":
-            if stack[-1] == "cutscene":
-                outlines.append(f'execute if score t {ObjectiveName} matches {time} run tellraw @a "{line[4:]}"')
-            elif stack[-1] == "duration":
-                outlines.append(f'execute if score t {ObjectiveName} matches {time}..{time+duration} run tellraw @a "{line[4:]}"')
-
-        if split[0] == "command":
-            if stack[-1] == "cutscene":
-                outlines.append(f"execute if score t {ObjectiveName} matches {time} run {line[8:]}")
-            elif stack[-1] == "duration":
-                outlines.append(f'execute if score t {ObjectiveName} matches {time}..{time+duration} run {line[8:]}')
-
-        if split[0] == "wait":
-            if stack[-1] == "cutscene":
-                time += get_time(split[1])
-            elif stack[-1] == "duration":
-                raise Exception("Putting wait inside duration is not a feature")
-            
-        if split[0] == "}":
-            block = stack.pop()
-            if block == "cutscene":
-                finish_time = max(finish_time, time)
-
-                outlines.append("")
-                outlines.append("### Cutscene Cleanup ###")
-                outlines.append(f'execute if score t {ObjectiveName} matches {finish_time} run scoreboard players set endCutscene {ObjectiveName} 1')
-                outlines.append(f'execute if score endCutscene {ObjectiveName} matches 1 run scoreboard players set t {ObjectiveName} 0')
-                outlines.append("")
-                outlines.append("### Run cutscene every tick ###")
-                outlines.append(f"execute unless score endCutscene {ObjectiveName} matches 1 run schedule function {outname} 1t append")
-
-            elif block == "duration":
-                pass
-
-            else:
-                raise Exception("You tried to use an invalid block type or something")
-
-for line in outlines:
-    print(line)
+        program.add_command(line)
+    for line in program.outlines:
+        print(line)
