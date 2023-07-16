@@ -9,7 +9,11 @@ class Close_Block:
     parent = None
     can_wait = True
     def __init__(self, stack, line, args) -> None:
-        self.text = stack.pop().end()
+        self.item = stack.pop()
+        self.text = self.item.end()
+    
+    def prefix(self):
+        return self.item.prefix()
 
 class Say:
     takes_block = False
