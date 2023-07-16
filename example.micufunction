@@ -1,9 +1,14 @@
-function myobjective {
+function tt2:misc/example_micufunction {
     say <Miku> hi
     # This is a comment
     wait 10
     duration 30t {
         command gamemode creative @a
         say <Miku> hello!
+    }
+    if score Lemmata Stats matches 20.. {
+        say Your mathematical intuition says you have at least 20 lemmata.
+    } else {
+        say Your mathematical intuition says you do not have 20 lemmata.
     }
 }

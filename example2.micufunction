@@ -1,4 +1,4 @@
-function PythagorasCutscene2 {
+function tt2:gronk/tournament/pythagoras_cutscene_2 {
     # TV Minigame results
     command execute at @a run playsound tt2:anime_wow master @a
     wait 20
