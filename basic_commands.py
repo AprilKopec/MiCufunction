@@ -30,9 +30,9 @@ class Command:
 class Wait:
     takes_block = False
     def __init__(self, stack: list, line: str, args: list[str]) -> None:
-        cutscene = stack[-1]
-        assert(isinstance(cutscene, Cutscene))
-        cutscene.time += Time(args[1])
+        self.parent = stack[-1]
+        assert hasattr(self.parent, "time"), f"Wait command not supported in {type(self.parent).__name__} blocks."
+        self.parent.time += Time(args[1])
         self.text = []
 
 class Comment:
