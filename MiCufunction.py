@@ -28,7 +28,7 @@ outlines = []
 stack = []
 
 with open(filename, 'r') as infile:
-    lines = infile.readlines
+    lines = infile.readlines()
     for line in lines:
         line = line.strip()
         split = line.split(' ')
