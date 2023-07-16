@@ -32,12 +32,12 @@ class Program:
         except AssertionError as e:
             raise AssertionError(f"Error on line {line_num}: {e.args[0]}")
 
+        for text in item.text:
+            self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
+
         if command_type.takes_block:
             assert(args[-1] == "{", f"Error on line {line_num}: Missing {{")
             self.stack.append(item)
-        
-        for text in item.text:
-            self.outlines.append(self.stack[-1].prefix() + " " + text if len(self.stack) >= 1 else text)
 
     def walkStack(self, typ: type):
         for item in reversed(self.stack):
