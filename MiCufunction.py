@@ -23,15 +23,15 @@ class Program:
         self.stack = []
         self.outlines = []
 
-    def add_command(self, line: str):
+    def add_command(self, line: str, line_num: int):
         line = line.strip()
         args = line.split(' ')
 
         if line != "}":
             command_type = get_command_type(line, args)
-            
+
             if command_type.takes_block:
-                assert(args[-1] == "{")
+                assert(args[-1] == "{", f"No {{ on line {line_num}")
                 item = command_type(self.stack, line, args)
                 for text in item.begin():
                     if text is not None:
@@ -42,8 +42,7 @@ class Program:
                 text = command_type(self.stack, line, args).text
                 if text is not None:
                         self.outlines.append(self.stack[-1].prefix() + " " + text)
-        else: 
-            assert(line == "}")
+        else: # }
             item = self.stack.pop()
             for text in item.end():
                 if text is not None:
@@ -63,8 +62,8 @@ def main():
     with open(FILENAME, 'r') as infile:
         lines = infile.readlines()
         program = Program()
-        for line in lines:
-            program.add_command(line)
+        for i in len(lines):
+            program.add_command(lines[i], i)
         for line in program.outlines:
             print(line)
 
