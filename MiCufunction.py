@@ -1,6 +1,7 @@
 import sys
 from cutscene import Cutscene
 from duration import Duration
+from conditional import If
 from basic_commands import Say, Command, Wait, Comment, Close_Block
 
 supported_commands = {"cutscene": Cutscene,
@@ -8,12 +9,14 @@ supported_commands = {"cutscene": Cutscene,
                       "say": Say,
                       "command": Command,
                       "wait": Wait,
+                      "if": If,
                       "}": Close_Block}
 
-def get_command_type(line, args):
+def get_command_type(line, args, line_num):
     if line == "" or line.startswith("#"):
         command_type = Comment
     else:
+        assert args[0] in supported_commands, f"Error on line {line_num}: {args[0]} is an invalid command"
         command_type = supported_commands[args[0]]
     return command_type
 
@@ -25,13 +28,15 @@ class Program:
     def add_command(self, line: str, line_num: int):
         line = line.strip()
         args = line.split(' ')
-        command_type = get_command_type(line, args)
+
+        command_type = get_command_type(line, args, line_num)
 
         try:
             item = command_type(self.stack, line, args)
             self.outlines += item.text
-        except AssertionError as e:
-            raise AssertionError(f"Error on line {line_num}: {e.args[0]}")
+        except Exception as e:
+            print(f"Error on line {line_num}: {e.args[0]}")
+            raise
 
         if command_type.takes_block:
             assert args[-1] == "{", f"Error on line {line_num}: Missing {{"
@@ -45,7 +50,7 @@ class Program:
 
 def main():
     # FILENAME = sys.argv[1]
-    FILENAME = "example.micufunction"
+    FILENAME = "example2.micufunction"
     if(FILENAME.split('.')[-1].lower() != "micufunction"):
         raise Exception(".micufunction file not provided")
 
@@ -53,7 +58,7 @@ def main():
         lines = infile.readlines()
         program = Program()
         for i in range(len(lines)):
-            program.add_command(lines[i], i)
+            program.add_command(lines[i], i+1)
         for line in program.outlines:
             print(line)
 

@@ -6,12 +6,13 @@ class Cutscene:
         self.time = Time(1)
         self.latest_time = Time(1)
         self.objective = Objective(args[1])
-        self.text = self.begin()
         
         self.timer_number = 0
         self.timer_name = "t"
         self.pause_name = "pause"
         self.end_name = "endCutscene"
+
+        self.text = self.begin()
 
     def begin(self) -> list[str]:
         return [

@@ -5,7 +5,7 @@ import re
 class Objective:
     def __init__(self, name: str) -> None:
         if re.match(r'^[a-zA-Z0-9_.+-]+$',name) is None:
-           raise ValueError(name + "is not a valid objective name")
+           raise ValueError(name + " is not a valid objective name")
         self.name = name
 
 # Takes a string which contains either an integer, or an number followed by s or t
