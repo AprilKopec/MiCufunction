@@ -18,12 +18,14 @@ class Close_Block:
 class Say:
     takes_block = False
     def __init__(self, stack: list, line: str, args: list[str]) -> None:
-      self.text = [f'tellraw @a "{rest(line)}"']
+      self.parent = stack[-1]
+      self.text = [f'{self.parent.prefix()} tellraw @a "{rest(line)}"']
 
 class Command:
     takes_block = False
     def __init__(self, stack: list, line: str, args: list[str]) -> None:
-      self.text = [rest(line)]
+      self.parent = stack[-1]
+      self.text = [f"{self.parent.prefix()} {rest(line)}"]
 
 class Wait:
     takes_block = False
