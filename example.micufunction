@@ -2,5 +2,8 @@ cutscene myobjective {
     say <Miku> hi
     # This is a comment
     wait 10
-    command gamemode creative @a
+    duration 30t {
+        command gamemode creative @a
+        say <Miku> hello!
+    }
 }

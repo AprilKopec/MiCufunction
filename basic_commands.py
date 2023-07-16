@@ -5,7 +5,7 @@ def rest(string):
     return string.split(" ", 1)[1]
 
 class Close_Block:
-    takes_block = True
+    takes_block = False
     parent = None
     can_wait = True
     def __init__(self, stack, line, args) -> None:

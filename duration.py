@@ -17,11 +17,11 @@ class Duration:
         assert preprefix[-7] == "if", "Issue with duration's parent"
         assert preprefix[-6] == "score", "Issue with duration's parent"
         assert preprefix[-3] == "matches", "Issue with duration's parent"
-        assert preprefix[-2].isdigits() or (preprefix[-2][0] == '-' and preprefix[-2][1:].isdigits()), "Issue with duration's parent"
+        assert preprefix[-2].isdigit() or (preprefix[-2][0] == '-' and preprefix[-2][1:].isdigit()), "Issue with duration's parent"
         assert preprefix[-1] == "run", "Issue with duration's parent"
 
         prefix_text = preprefix
-        prefix_text[-3] = prefix_text[-3] + ".." + str(self.parent.time + self.duration - Time(1))
+        prefix_text[-2] = prefix_text[-2] + ".." + str(self.parent.time + self.duration - Time(1))
         return " ".join(prefix_text)
 
     def end(self)-> list[str]:
