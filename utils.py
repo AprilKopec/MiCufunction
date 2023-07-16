@@ -27,6 +27,8 @@ class Time:
 
     def __add__(self, other):
         return Time(self.ticks + other.ticks)
+    def __sub__(self, other):
+        return Time(self.ticks - other.ticks)
     def __lt__(self, other):
         return self.ticks < other.ticks
     def __eq__(self, other):
