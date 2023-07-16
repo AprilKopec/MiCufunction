@@ -1,18 +1,7 @@
-from cutscene import Cutscene
 from utils import Time
 
 def rest(string):
     return string.split(" ", 1)[1]
-
-class Close_Block:
-    takes_block = False
-    parent = None
-    can_wait = True
-    def __init__(self, stack, line, args) -> None:
-        self.item = stack.pop()
-        self.text = self.item.end() 
-    def prefix(self):
-        return self.item.prefix()
 
 class Say:
     takes_block = False

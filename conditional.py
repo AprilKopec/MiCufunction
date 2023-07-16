@@ -7,7 +7,7 @@ class If:
         self.time = Time(1)
         self.latest_time = Time(1)
         self.objective = self.parent.objective
-        self.condition = " ".join(args[1:-1])
+        self.condition = "execute if " + " ".join(args[1:-1])
 
         self.timer_number = self.parent.timer_number + 1
         self.timer_name = "t" + str(self.timer_number)

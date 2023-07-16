@@ -10,7 +10,8 @@ supported_commands = {"cutscene": Cutscene,
                       "command": Command,
                       "wait": Wait,
                       "if": If,
-                      "}": Close_Block}
+                      "}": Close_Block,
+                      }
 
 def get_command_type(line, args, line_num):
     if line == "" or line.startswith("#"):
