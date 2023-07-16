@@ -39,8 +39,9 @@ class Program:
                 self.stack.append(item)
 
             else:
-                text = command_type(self.stack, line, args).text
-                if text is not None:
+                item = command_type(self.stack, line, args)
+                for text in item.text:
+                    if text is not None:
                         self.outlines.append(self.stack[-1].prefix() + " " + text)
         else: # }
             item = self.stack.pop()
