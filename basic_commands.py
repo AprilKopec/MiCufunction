@@ -10,8 +10,7 @@ class Close_Block:
     can_wait = True
     def __init__(self, stack, line, args) -> None:
         self.item = stack.pop()
-        self.text = self.item.end()
-    
+        self.text = self.item.end() 
     def prefix(self):
         return self.item.prefix()
 
