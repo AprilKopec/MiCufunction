@@ -1,4 +1,4 @@
-cutscene PythagorasCutscene2 {
+function PythagorasCutscene2 {
     # TV Minigame results
     command execute at @a run playsound tt2:anime_wow master @a
     wait 20

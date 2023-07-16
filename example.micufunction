@@ -1,4 +1,4 @@
-cutscene myobjective {
+function myobjective {
     say <Miku> hi
     # This is a comment
     wait 10
