@@ -2,7 +2,8 @@ import sys
 from cutscene import Cutscene
 from duration import Duration
 from conditional import If
-from basic_commands import Say, Command, Wait, Comment, Close_Block
+from close_block import Close_Block
+from basic_commands import Say, Command, Wait, Comment
 
 supported_commands = {"cutscene": Cutscene,
                       "duration": Duration,

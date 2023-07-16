@@ -18,9 +18,9 @@ class If:
 
     def begin(self) -> list[str]:
         return [
-          f"    {self.parent.prefix()} scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 1",
-          f"    {self.parent.prefix()} execute unless score {self.pause_name} {self.objective.name} matches 1 run scoreboard players add {self.timer_name} {self.objective.name} 1",
-          f"    {self.parent.prefix()} scoreboard players set {self.end_name} {self.objective.name} 0",
+          f"    {self.parent.prefix()} {self.condition} run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 1",
+          f"    {self.parent.prefix()} {self.condition} unless score {self.pause_name} {self.objective.name} matches 1 run scoreboard players add {self.timer_name} {self.objective.name} 1",
+          f"    {self.parent.prefix()} {self.condition} run scoreboard players set {self.end_name} {self.objective.name} 0",
           "",
         ]
 
@@ -28,9 +28,9 @@ class If:
         self.latest_time = max(self.latest_time, self.time)
         return [
           "",
-          f'    {self.parent.prefix()} execute if score {self.timer_name} {self.objective.name} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective.name} 1',
-          f'    {self.parent.prefix()} execute if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.timer_name} {self.objective.name} 0',
-          f'    {self.parent.prefix()} execute if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 0',
+          f'    {self.parent.prefix()} {self.condition} if score {self.timer_name} {self.objective.name} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective.name} 1',
+          f'    {self.parent.prefix()} {self.condition} if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.timer_name} {self.objective.name} 0',
+          f'    {self.parent.prefix()} {self.condition} if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 0',
           ""
         ]
 

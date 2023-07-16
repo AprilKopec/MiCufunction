@@ -11,7 +11,7 @@ class Close_Block:
 
         elif line == "} else {":
             self.item = stack.pop()
-            assert isinstance(If,self.parent), "else must go after if"
+            assert isinstance(self.item, If), "else must go after if"
             self.text = self.item.end()
 
             condition = self.item.condition.split(" ")
