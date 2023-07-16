@@ -35,7 +35,7 @@ class Program:
             raise AssertionError(f"Error on line {line_num}: {e.args[0]}")
 
         if command_type.takes_block:
-            assert(args[-1] == "{", f"No {{ on line {line_num}")
+            assert(args[-1] == "{", f"Error on line {line_num}: Missing {{")
             self.stack.append(item)
         
         for text in item.text:
