@@ -61,7 +61,7 @@ with open(filename, 'r') as infile:
             if stack[-1] == "cutscene":
                 outlines.append(f'execute if score t {ObjectiveName} matches {time} run tellraw @a "{line[4:]}"')
             elif stack[-1] == "duration":
-                outlines.append(f'execute if score t {ObjectiveName} matches {time}..{time+duration}')
+                outlines.append(f'execute if score t {ObjectiveName} matches {time}..{time+duration} run tellraw @a "{line[4:]}"')
 
         if split[0] == "command":
             if stack[-1] == "cutscene":
@@ -88,8 +88,11 @@ with open(filename, 'r') as infile:
                 outlines.append("### Run cutscene every tick ###")
                 outlines.append(f"execute unless score endCutscene {ObjectiveName} matches 1 run schedule function {outname} 1t append")
 
-            if block == "duration":
+            elif block == "duration":
                 pass
+
+            else:
+                raise Exception("You tried to use an invalid block type or something")
 
 for line in outlines:
     print(line)
