@@ -3,9 +3,11 @@ function tt2:gronk/tournament/pythagoras_part2 {
     # TV Minigame results
     command execute at @a run playsound tt2:anime_wow master @a
     wait 20
+
     camera summon at 855.5 72 8980.5 facing 858 72 8977
     camera enable
     wait 10
+    
     say <Mr. Pythagoras> Congratulations! You won 11 free televisions!
     wait 45
 
@@ -34,12 +36,11 @@ function tt2:gronk/tournament/pythagoras_part2 {
         command summon item 824 79 8977 {Item:{id:"minecraft:cod_bucket",Count:1b,tag:{display:{Name:'{"text":"\\"Mr. Pythagoras Burger\\"","color":"aqua"}',Lore:['{"text":"Allegedly","color":"light_purple","italic":true}']}}}}
         command execute at @a run playsound tt2:anime_wow master @a
         wait 80
-    }
-    else {
+    } else {
         say <Mr. Pythagoras> Congratulations to everyone except Terry! You all win a Mr. Pythagoras Burger.
         wait 80
         say <Mr. Pythagoras> Sorry Terry, you win a dirt block.
-        summon item 824 79 8977 {Item:{id:"minecraft:dirt",Count:1b}}
+        command summon item 824 79 8977 {Item:{id:"minecraft:dirt",Count:1b}}
         command execute at @a run playsound tt2:wrong_buzz master @a
         wait 40
     }

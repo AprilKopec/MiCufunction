@@ -4,12 +4,16 @@ from math import atan2, degrees, sqrt
 def rest(string, n = 2) -> str:
     return string.split(" ", n)[n]
 
-def block_center(coord):
-        assert isinstance(coord,int) or isinstance(coord,float), "Coordinates must be ints or floats"
-        return coord + 0.5 if isinstance(coord, int) else coord
+def parse_coord(r, center):
+        r = float(r)
+        return r + 0.5 if center else r
 
+# Center if given int, don't if given float
 def parse_pos(x, y, z):
-        return (block_center(x), y, block_center(z))
+    if isinstance(x, str): # slightly hacky
+        return (parse_coord(x, "." in x), parse_coord(y, False), parse_coord(z, "." in z))
+    else:
+        return (float(x), float(y), float(z))
 
 # Probably the simple vector parts here should be replaced with something imported
 class Camera_Position:
@@ -41,7 +45,7 @@ class Camera_Position:
     def __mul__(self, scalar: float):
         return Camera_Position(*(self.pos[i]*scalar for i in range(3)))
     
-    def __div__(self, scalar: float):
+    def __truediv__(self, scalar: float):
         return Camera_Position(*(self.pos[i]/scalar for i in range(3)))
     
     def update_pos(self, x, y, z):
@@ -63,13 +67,12 @@ class Camera_Position:
         return azimuth, altitude
 
     def face_towards(self, x, y, z):
-        self.update_angle(self.facing_to_angle(x,y,z))
+        self.update_angle(*self.facing_to_angle(x,y,z))
 
     def slide_per_tick(self, x, y, z, t):
-        dx = (x-self.x())/t
-        dy = (y-self.y())/t
-        dz = (z.self.z())/t
-        return dx, dy, dz
+        end = Camera_Position(x, y, z)
+        dpos = (end-self)/float(t)
+        return dpos.x(), dpos.y(), dpos.z()
 
 # Maybe this should be refactored to use a dictionary of subcommands or something
 # But recreating a commands system for every complicated command seems slightly silly
@@ -96,8 +99,7 @@ class Camera:
         if args[1] == "setup":
             self.text = [
                 "tp @a[tag=cutsceneCamEnabled] @e[tag=cutsceneCam,limit=1]",
-                "execute as @a[tag=cutsceneCamEnabled] at @s rotated as @s run tp @s ^ ^ ^0.1",
-                "effect clear @a[tag=!cutsceneCamEnabled,gamemode=adventure] levitation"
+                "execute as @a[tag=cutsceneCamEnabled] at @s rotated as @s run tp @s ^ ^ ^0.1"
             ]
         elif args[1] == "summon":
             assert args[2] == "at", "Syntax is camera summon at X Y Z (facing X Y Z)"
@@ -114,7 +116,7 @@ class Camera:
                     set_facing(args[7], args[8], args[9])
         # camera enable {target selector}
         elif args[1] == "enable":
-            if len(args = 2):
+            if len(args) == 2:
                 target = "@a[gamemode=adventure]"
             else:
                 target = rest(line, 2)
@@ -171,8 +173,8 @@ class Camera:
                 f"effect clear {target} levitation",
                 f"gamemode adventure {target}",
                 f"tag {target} remove cutsceneCamEnabled",
-                " ".join(self.parent.prefix), f"kill @e[type=armor_stand,tag=cutsceneCam]"
+                f"kill @e[type=armor_stand,tag=cutsceneCam]"
             ]
 
         if args[1] != "setup":
-            self.text = [" ".join[self.parent.prefix(), line] for line in self.text]
+            self.text = [" ".join([self.parent.prefix(), line]) for line in self.text]
