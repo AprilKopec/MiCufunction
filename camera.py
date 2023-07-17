@@ -152,7 +152,7 @@ class Camera:
                     self.source.camera += Camera_Position(args[3], args[4], args[5], args[6], args[7])*t
         elif args[1] == "pause":
             assert len(args) == 2, "camera pause doesn't take any further arguments"
-            target = "@e[tag=cutsceneCamEnabled]"
+            target = "@a[tag=cutsceneCamEnabled]"
             self.text = [
                 " ".join(self.parent.prefix(), f"effect clear {target} levitation"),
                 " ".join(self.parent.prefix(), f"gamemode adventure {target}"),
@@ -160,7 +160,7 @@ class Camera:
                 ]
         elif args[1] == "kill":
             assert len(args) == 2, "camera kill doesn't take any further arguments"
-            target = "@e[tag=cutsceneCamEnabled]"
+            target = "@a[tag=cutsceneCamEnabled]"
             self.text = [
                 " ".join(self.parent.prefix(), f"effect clear {target} levitation"),
                 " ".join(self.parent.prefix(), f"gamemode adventure {target}"),
