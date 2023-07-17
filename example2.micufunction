@@ -1,9 +1,9 @@
-cutscene {
+function tt2:gronk/tournament/pythagoras_part2 {
     camera setup
     # TV Minigame results
     command execute at @a run playsound tt2:anime_wow master @a
     wait 20
-    camera summon 855.5 72 8980.5 facing 858 72 8977
+    camera summon at 855.5 72 8980.5 facing 858 72 8977
     camera enable
     wait 10
     say <Mr. Pythagoras> Congratulations! You won 11 free televisions!

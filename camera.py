@@ -94,7 +94,6 @@ class Camera:
         assert args[1] in ["setup", "summon", "enable", "goto", "slide", "pause", "kill"], "Camera argument not supported"
 
         if args[1] == "setup":
-            # The lack of prefix here is intentional; this should run the entire duration of the function
             self.text = [
                 "tp @a[tag=cutsceneCamEnabled] @e[tag=cutsceneCam,limit=1]",
                 "execute as @a[tag=cutsceneCamEnabled] at @s rotated as @s run tp @s ^ ^ ^0.1",
@@ -102,16 +101,16 @@ class Camera:
             ]
         elif args[1] == "summon":
             assert args[2] == "at", "Syntax is camera summon at X Y Z (facing X Y Z)"
-            self.text = [" ".join(self.parent.prefix(), f'kill @e[type=armor_stand,tag=cutsceneCam]')]
+            self.text = [f'kill @e[type=armor_stand,tag=cutsceneCam]']
             # camera summon at X Y Z
             if args[2] == "at":
-                self.text += [" ".join(self.parent.prefix(), f'summon armor_stand {args[3]} {args[4]} {args[5]} {{NoGravity:1b,Invulnerable:1b,Invisible:1b,Marker:1b,Tags:["cutsceneCam"]}}')]
+                self.text += [f'summon armor_stand {args[3]} {args[4]} {args[5]} {{NoGravity:1b,Invulnerable:1b,Invisible:1b,Marker:1b,Tags:["cutsceneCam"]}}']
                 set_pos(args[3], args[4], args[5])
                 # camera summon at X Y Z facing X Y Z
                 if len(args) > 6:
                     assert args[6] == "facing", "Only supported syntax is 'facing'"
                     assert len(args) == 10, "'facing' takes XYZ coordinates of a block the camera is facing towards"
-                    self.text += [" ".join(self.parent.prefix(), f"execute as @e[tag=cutsceneCam] at @s facing {args[7]} {args[8]} {args[9]} run tp @s ~ ~ ~ ~ ~")]
+                    self.text += [f"execute as @e[tag=cutsceneCam] at @s facing {args[7]} {args[8]} {args[9]} run tp @s ~ ~ ~ ~ ~"]
                     set_facing(args[7], args[8], args[9])
         # camera enable {target selector}
         elif args[1] == "enable":
@@ -120,21 +119,21 @@ class Camera:
             else:
                 target = rest(line, 2)
             self.text = [
-                " ".join(self.parent.prefix(), f"tag {target} add cutsceneCamEnabled"),
-                " ".join(self.parent.prefix(), f"effect give {target} levitation infinite 255 true"),
-                " ".join(self.parent.prefix(), f"gamemode spectator {target}")
+                f"tag {target} add cutsceneCamEnabled",
+                f"effect give {target} levitation infinite 255 true",
+                f"gamemode spectator {target}"
                 ]
         # camera goto
         elif args[1] == "goto":
             # camera goto X Y Z
             if len(args) == 5:
-                    self.text = [" ".join(self.parent.prefix(), f'execute positioned {args[2]} {args[3]} args{[4]} run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~')]
+                    self.text = [f'execute positioned {args[2]} {args[3]} args{[4]} run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~']
                     set_pos(args[2], args[3], args[4])
             # camera goto X Y Z facing X Y Z
             else:
                 assert args[5] == "facing", "Only supported syntax is 'camera goto X Y Z (facing X Y Z)'"
                 assert len(args) == 9, "'facing' takes XYZ coordinates of a block the camera is facing towards"
-                self.text = [" ".join(self.parent.prefix(), f'execute positioned {args[2]} {args[3]} {args[4]} facing {args[6]} args{[7]} args{[8]} run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~')]
+                self.text = [f'execute positioned {args[2]} {args[3]} {args[4]} facing {args[6]} args{[7]} args{[8]} run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~']
                 set_facing(args[6], args[7], args[8])
         # slide is currently implemented in Python
         # It will be much more versatile if implemented in .mcfunction but I don't wanna
@@ -146,31 +145,34 @@ class Camera:
                 assert type(self.parent).__name__ == "Duration", "camera slide to must be inside duration block"
                 assert len(args) == 6, "Automatic angle calculation not supported until .micufunction can do scoreboard math well"
                 dx, dy, dz = get_slide_amount(args[3], args[4], args[5], self.parent.duration.ticks)
-                self.text = [" ".join(self.parent.prefix(), f'execute as @e[tag=cutsceneCam] at @s rotated as @s run tp @s ~{dx} ~{dy} ~{dz} ~ ~')]
+                self.text = [f'execute as @e[tag=cutsceneCam] at @s rotated as @s run tp @s ~{dx} ~{dy} ~{dz} ~ ~']
                 set_pos(args[3], args[4], args[5])
             elif args[2] == "by":
                 assert len(args) in [6, 8], "Syntax is 'camera slide by DX DY DZ (DANGLEX DANGLEY)"
                 t = self.parent.duration.ticks if type(self.parent).__name__ == "Duration" else 1
                 if len(args) == 6:
-                    self.text = [" ".join(self.parent.prefix(), f'execute as @e[tag=cutsceneCam] at @s rotated as @s run tp @s ~{args[3]} ~{args[4]} ~{args[5]} ~ ~')]
+                    self.text = [f'execute as @e[tag=cutsceneCam] at @s rotated as @s run tp @s ~{args[3]} ~{args[4]} ~{args[5]} ~ ~']
                     self.source.camera += Camera_Position(args[3], args[4], args[5])*t
                 elif len(args) == 8:
-                    self.text = [" ".join(self.parent.prefix(), f'execute as @e[tag=cutsceneCam] at @s rotated as @s run tp @s ~{args[3]} ~{args[4]} ~{args[5]} ~{args[6]} ~{args[7]}')]
+                    self.text = [f'execute as @e[tag=cutsceneCam] at @s rotated as @s run tp @s ~{args[3]} ~{args[4]} ~{args[5]} ~{args[6]} ~{args[7]}']
                     self.source.camera += Camera_Position(args[3], args[4], args[5], args[6], args[7])*t
         elif args[1] == "pause":
             assert len(args) == 2, "camera pause doesn't take any further arguments"
             target = "@a[tag=cutsceneCamEnabled]"
             self.text = [
-                " ".join(self.parent.prefix(), f"effect clear {target} levitation"),
-                " ".join(self.parent.prefix(), f"gamemode adventure {target}"),
-                " ".join(self.parent.prefix(), f"tag {target} remove cutsceneCamEnabled")
+                f"effect clear {target} levitation",
+                f"gamemode adventure {target}",
+                f"tag {target} remove cutsceneCamEnabled"
                 ]
         elif args[1] == "kill":
             assert len(args) == 2, "camera kill doesn't take any further arguments"
             target = "@a[tag=cutsceneCamEnabled]"
             self.text = [
-                " ".join(self.parent.prefix(), f"effect clear {target} levitation"),
-                " ".join(self.parent.prefix(), f"gamemode adventure {target}"),
-                " ".join(self.parent.prefix(), f"tag {target} remove cutsceneCamEnabled"),
+                f"effect clear {target} levitation",
+                f"gamemode adventure {target}",
+                f"tag {target} remove cutsceneCamEnabled",
                 " ".join(self.parent.prefix), f"kill @e[type=armor_stand,tag=cutsceneCam]"
             ]
+
+        if args[1] != "setup":
+            self.text = [" ".join[self.parent.prefix(), line] for line in self.text]

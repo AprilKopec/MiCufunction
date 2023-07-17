@@ -2,6 +2,7 @@ import sys
 from function import Function
 from duration import Duration
 from conditional import If
+from camera import Camera
 from close_block import Close_Block
 from basic_commands import Say, Command, Wait, Comment
 
@@ -11,6 +12,7 @@ supported_commands = {"function": Function,
                       "command": Command,
                       "wait": Wait,
                       "if": If,
+                      "camera": Camera, 
                       "}": Close_Block,
                       }
 
