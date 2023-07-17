@@ -1,4 +1,5 @@
 from utils import Time, Objective
+from camera import Camera_Position
 
 class Function:
     takes_block = True
@@ -13,6 +14,8 @@ class Function:
         self.timer_name = "t"
         self.pause_name = "pause"
         self.end_name = "endCutscene"
+
+        self.camera = Camera_Position(0, 0, 0)
 
         self.text = self.begin()
 
