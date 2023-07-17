@@ -4,10 +4,17 @@ from math import atan2, degrees, sqrt
 def rest(string, n = 2) -> str:
     return string.split(" ", n)[n]
 
+def block_center(coord):
+        assert isinstance(coord,int) or isinstance(coord,float), "Coordinates must be ints or floats"
+        return coord + 0.5 if isinstance(coord, int) else coord
+
+def parse_pos(x, y, z):
+        return (block_center(x), y, block_center(z))
+
 # Probably the simple vector parts here should be replaced with something imported
 class Camera_Position:
     def __init__(self, x, y, z, azimuth = 0, altitude = 0):
-        self.pos = (float(x), float(y), float(z))
+        self.pos = parse_pos(x, y, z)
         self.angle = (float(azimuth), float(altitude))
 
     def x(self):
@@ -38,7 +45,7 @@ class Camera_Position:
         return Camera_Position(*(self.pos[i]/scalar for i in range(3)))
     
     def update_pos(self, x, y, z):
-        self.pos = (float(x), float(y), float(z))
+        self.pos = parse_pos(x, y, z)
 
     def update_angle(self, azimuth, altitude):
         self.angle = (float(azimuth), float(altitude))
