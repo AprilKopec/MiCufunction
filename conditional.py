@@ -1,4 +1,5 @@
 from utils import Time
+from copy import copy
 
 class If:
     takes_block = True
@@ -17,6 +18,7 @@ class If:
         self.text = self.begin()
 
     def begin(self) -> list[str]:
+        self.camera = copy(self.parent.camera)
         return [
           f"    {self.parent.prefix()} {self.condition} run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 1",
           f"    {self.parent.prefix()} {self.condition} unless score {self.pause_name} {self.objective.name} matches 1 run scoreboard players add {self.timer_name} {self.objective.name} 1",
