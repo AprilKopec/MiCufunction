@@ -1,10 +1,10 @@
-function tt2:gronk/tournament/pythagoras_cutscene_2 {
+cutscene {
+    camera setup
     # TV Minigame results
     command execute at @a run playsound tt2:anime_wow master @a
     wait 20
-    command execute positioned 855.5 72 8980.5 facing 858 72 8977 run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~
-    command tag @a[gamemode=adventure] add cutsceneCamEnabled
-    command gamemode spectator @a[tag=cutsceneCamEnabled]
+    camera summon 855.5 72 8980.5 facing 858 72 8977
+    camera enable
     wait 10
     say <Mr. Pythagoras> Congratulations! You won 11 free televisions!
     wait 45
@@ -16,13 +16,13 @@ function tt2:gronk/tournament/pythagoras_cutscene_2 {
     command scoreboard players enable @a PythagorasTrigger
     command tellraw @a ["<Mr. Pythagoras> Integrate e^(x^2)dt from 0 to 100","\n",{"text":"erf(100)","color":"gold","clickEvent":{"action":"run_command","value":"/trigger PythagorasTrigger set 1"}},"\n",{"text":"100 e^(x^2)","color":"#9ACD32","clickEvent":{"action":"run_command","value":"/trigger PythagorasTrigger set 2"}},"\n",{"text":"~ 0.886227","color":"aqua","clickEvent":{"action":"run_command","value":"/trigger PythagorasTrigger set 3"}},"\n",{"text":"sqrt(pi) + C","color":"light_purple","clickEvent":{"action":"run_command","value":"/trigger PythagorasTrigger set 4"}}]
 
-    command execute positioned 821.5 76 8973.5 facing 824 74 8977 run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~
+    camera goto 821 76 8973 facing 824 74 8977
     duration 300 {
-        command execute as @e[tag=cutsceneCam,limit=1] at @s rotated as @s run tp @s ~0.1 ~ ~
+        camera slide to 851 76 8973
     }
 
     # Calculus question results
-    command execute positioned 855.5 72 8980.5 facing 858 72 8977 run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~
+    camera goto 855.5 72 8980.5 facing 858 72 8977
     wait 20
 
     command summon item 848 79 8977 {Item:{id:"minecraft:cod_bucket",Count:1b,tag:{display:{Name:'{"text":"\\"Mr. Pythagoras Burger\\"","color":"aqua"}',Lore:['{"text":"Allegedly","color":"light_purple","italic":true}']}}}}
@@ -34,12 +34,15 @@ function tt2:gronk/tournament/pythagoras_cutscene_2 {
         command summon item 824 79 8977 {Item:{id:"minecraft:cod_bucket",Count:1b,tag:{display:{Name:'{"text":"\\"Mr. Pythagoras Burger\\"","color":"aqua"}',Lore:['{"text":"Allegedly","color":"light_purple","italic":true}']}}}}
         command execute at @a run playsound tt2:anime_wow master @a
         wait 80
-    } else {
+    }
+    else {
         say <Mr. Pythagoras> Congratulations to everyone except Terry! You all win a Mr. Pythagoras Burger.
         wait 80
         say <Mr. Pythagoras> Sorry Terry, you win a dirt block.
-        command summon item 824 79 8977 {Item:{id:"minecraft:dirt",Count:1b}}
+        summon item 824 79 8977 {Item:{id:"minecraft:dirt",Count:1b}}
         command execute at @a run playsound tt2:wrong_buzz master @a
         wait 40
     }
+
+    camera kill
 }
