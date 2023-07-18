@@ -17,8 +17,7 @@ class Camera(MiCufunction_Command):
         # This is hacky
         self.source = stack[-2] if type(self.parent).__name__ == "Duration" else self.parent
 
-        self.line = line
-
+        # Some of this should maybe not be directly in __init__
         self.set_pos = self.source.camera.update_pos
         self.set_facing = self.source.camera.face_towards
         self.get_slide_amount = self.source.camera.slide_per_tick

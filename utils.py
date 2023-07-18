@@ -13,6 +13,19 @@ class Objective:
     def __str__(self) -> str:
         return self.name
 
+class Score_Holder:
+    def __init__(self, name: str) -> None:
+        if name[0] == "@":
+            raise ValueError("Score holders cannot begin with '@'")
+        elif name.isdigit() or (name[0] == "-" and name[1:].isdigit()):
+            raise ValueError("Score holder names should not be integers")
+        
+        self.name = name
+    
+    def __str__(self) -> str:
+        return self.name
+
+
 # Takes a string which contains either an integer, or an number followed by s or t
 # If it's a plain integer or is followed by t, it is interpreted as a number of ticks
 # If it's followed by s it is interpreted as a number of seconds
