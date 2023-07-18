@@ -4,10 +4,14 @@ import re
 from math import atan2, degrees, sqrt
 
 class Objective:
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, criterion = "dummy") -> None:
         if re.match(r'^[a-zA-Z0-9_.+-]+$',name) is None:
            raise ValueError(name + " is not a valid objective name")
         self.name = name
+        self.criterion = criterion
+
+    def __str__(self) -> str:
+        return self.name
 
 # Takes a string which contains either an integer, or an number followed by s or t
 # If it's a plain integer or is followed by t, it is interpreted as a number of ticks

@@ -1,22 +1,19 @@
 from utils import Time, Objective, Camera_Position
+from command_baseclass import Control_Flow
 
-class Function:
+class Function(Control_Flow):
     takes_block = True
     def __init__(self, stack, line, args) -> None:
-        self.time = Time(1)
-        self.latest_time = Time(1)
+        super.__init__(stack, line, args)
 
         self.function_name = args[1]
-        self.objective = Objective(args[1].replace(":",".").replace("/","."))
-        
-        self.timer_number = 0
-        self.timer_name = "t"
-        self.pause_name = "pause"
-        self.end_name = "endCutscene"
 
         self.camera = Camera_Position(0, 0, 0)
 
         self.text = self.begin()
+
+    def get_objective(self) -> Objective:
+        return Objective(self.args[1].replace(":",".").replace("/","."))
 
     def begin(self) -> list[str]:
         return [

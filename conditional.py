@@ -1,40 +1,34 @@
 from utils import Time
 from copy import copy
+from command_baseclass import Control_Flow
 
-class If:
+class If(Control_Flow):
     takes_block = True
     def __init__(self, stack, line, args) -> None:
+        super.__init__(stack, line, args)
         self.parent = stack[-1]
-        self.time = Time(1)
-        self.latest_time = Time(1)
-        self.objective = self.parent.objective
         self.condition = "execute if " + " ".join(args[1:-1])
-
-        self.timer_number = self.parent.timer_number + 1
-        self.timer_name = "t" + str(self.timer_number)
-        self.pause_name = "pause" + str(self.timer_number)
-        self.end_name = "end" + str(self.timer_number)
 
         self.text = self.begin()
 
     def begin(self) -> list[str]:
+        # This is a little hacky but it makes the camera slightly less incompatible with conditionals
         self.camera = copy(self.parent.camera)
-        return [
-          f"    {self.parent.prefix()} {self.condition} run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 1",
-          f"    {self.parent.prefix()} {self.condition} unless score {self.pause_name} {self.objective.name} matches 1 run scoreboard players add {self.timer_name} {self.objective.name} 1",
-          f"    {self.parent.prefix()} {self.condition} run scoreboard players set {self.end_name} {self.objective.name} 0",
-          "",
+        text = [
+          f"{self.condition} run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 1",
+          f"{self.condition} unless score {self.pause_name} {self.objective.name} matches 1 run scoreboard players add {self.timer_name} {self.objective.name} 1",
+          f"{self.condition} run scoreboard players set {self.end_name} {self.objective.name} 0"
         ]
+        return ["    " + self.add_prefix(line) for line in text] + [""]
 
     def end(self):
         self.latest_time = max(self.latest_time, self.time)
-        return [
-          "",
-          f'    {self.parent.prefix()} {self.condition} if score {self.timer_name} {self.objective.name} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective.name} 1',
-          f'    {self.parent.prefix()} {self.condition} if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.timer_name} {self.objective.name} 0',
-          f'    {self.parent.prefix()} {self.condition} if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 0',
-          ""
+        text = [
+          f'{self.condition} if score {self.timer_name} {self.objective.name} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective.name} 1',
+          f'{self.condition} if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.timer_name} {self.objective.name} 0',
+          f'{self.condition} if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 0'
         ]
+        return [""] + ["    " + self.add_prefix(line) for line in text]
 
     def prefix(self) -> str:
-        return f"    {self.parent.prefix()} {self.condition} if score {self.timer_name} {self.objective.name} matches {self.time} run"
+        return "    " + self.add_prefix(f"{self.condition} if score {self.timer_name} {self.objective.name} matches {self.time} run")
