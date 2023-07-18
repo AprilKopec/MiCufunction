@@ -21,13 +21,14 @@ class Basic_Command(MiCufunction_Command):
     def get_text(self) -> List[str]:
         return []
 
+
 class Say(Basic_Command):
     def get_text(self):
-        return [self.prefix(f'tellraw @a "{rest(self.line)}"', self.stack)]
+        return [self.add_prefix(f'tellraw @a "{rest(self.line)}"', self.stack)]
 
 class Command(Basic_Command):
     def get_text(self):
-        return [self.prefix(rest(self.line),self.stack)]
+        return [self.add_prefix(rest(self.line),self.stack)]
 
 class Wait(Basic_Command):
     def pretext(self):
