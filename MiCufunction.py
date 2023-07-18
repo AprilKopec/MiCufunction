@@ -46,11 +46,6 @@ class Program:
             assert args[-1] == "{", f"Error on line {line_num}: Missing {{"
             self.stack.append(item)
 
-    def walkStack(self, typ: type):
-        for item in reversed(self.stack):
-            if isinstance(item, typ):
-                return item
-
 
 def main():
     # FILENAME = sys.argv[1]
