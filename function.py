@@ -1,5 +1,4 @@
-from utils import Time, Objective
-from camera import Camera_Position
+from utils import Time, Objective, Camera_Position
 
 class Function:
     takes_block = True
