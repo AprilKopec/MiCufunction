@@ -1,33 +1,40 @@
 from utils import Objective, Time
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import List
 
-class MiCufunction_Command(ABC):
-    @abstractmethod
+class MiCufunction_Command:
     def __init__(self, stack, line: str, args: List[str]):
-        pass
+        self.stack = stack
+        self.line = line
+        self.args = args
+        
+        self.prefixer = self.find_prefixer(stack)
 
-    def find_time_owner(self, stack):
+    def find_timekeeper(self, stack):
         for item in stack[::-1]:
             if hasattr(item, 'time'):
                 return item
+            return None
 
     # This is a step towards having top level commands other than function        
-    def find_prefix(self, stack):
+    def find_prefixer(self, stack):
         for item in stack[::-1]:
-            if hasattr(item, 'prefix'):
-                return item.prefix()
+            if hasattr(item, 'give_prefix'):
+                return item
             return None
             
-    def add_prefix(self, text: str, stack) -> str:
-        text_prefix = self.find_prefix(stack)
-        return " ".join([string for string in [text_prefix, text] if string is not None])
+    def add_prefix(self, text: str) -> str:
+        return " ".join([string for string in [self.prefixer.give_prefix(), text] if self.prefixer is not None])
+    
+    def get_prefix(self) -> str:
+        return self.prefixer.give_prefix() if self.prefixer is not None else ""
         
 
 class Control_Flow(MiCufunction_Command):
     takes_block = True
 
-    def __init__(self, stack: List[MiCufunction_Command], line: str, args: List[str]):
+    def __init__(self, stack, line: str, args: List[str]):
+        super().__init__(stack, line, args)
         self.stack = stack
         self.line = line
         self.args = args
@@ -64,4 +71,8 @@ class Control_Flow(MiCufunction_Command):
 
     @abstractmethod
     def end(self) -> list[str]:
+        pass
+
+    @abstractmethod
+    def give_prefix(self) -> str:
         pass

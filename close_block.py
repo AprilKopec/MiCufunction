@@ -1,6 +1,7 @@
 from conditional import If
+from command_baseclass import MiCufunction_Command
 
-class Close_Block:
+class Close_Block(MiCufunction_Command):
     takes_block = False
     def __init__(self, stack, line, args) -> None:
         # Xero I am sorry
@@ -21,7 +22,3 @@ class Close_Block:
             self.text += self.item.begin()
 
             stack.append(self.item)
-
-        
-    def prefix(self):
-        return self.item.prefix()

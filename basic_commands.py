@@ -8,10 +8,8 @@ def rest(string):
 class Basic_Command(MiCufunction_Command):
     takes_block = False
     def __init__(self, stack, line: str, args: List[str]):
-        self.stack = stack
-        self.line = line
-        self.args = args
-
+        super().__init__(stack, line, args)
+        
         self.pretext()
         self.text = self.get_text()
 
@@ -24,16 +22,16 @@ class Basic_Command(MiCufunction_Command):
 
 class Say(Basic_Command):
     def get_text(self):
-        return [self.add_prefix(f'tellraw @a "{rest(self.line)}"', self.stack)]
+        return [self.add_prefix(f'tellraw @a "{rest(self.line)}"')]
 
 class Command(Basic_Command):
     def get_text(self):
-        return [self.add_prefix(rest(self.line),self.stack)]
+        return [self.add_prefix(rest(self.line))]
 
 class Wait(Basic_Command):
     def pretext(self):
-        self.parent = self.find_time_owner(self.stack)
-        self.parent.time += Time(self.args[1])
+        self.timekeeper = self.find_timekeeper(self.stack)
+        self.timekeeper.time += Time(self.args[1])
 
 class Comment(Basic_Command):
     def get_text(self):

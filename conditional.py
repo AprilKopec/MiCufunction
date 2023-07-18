@@ -5,11 +5,10 @@ from command_baseclass import Control_Flow
 class If(Control_Flow):
     takes_block = True
     def __init__(self, stack, line, args) -> None:
-        super.__init__(stack, line, args)
         self.parent = stack[-1]
         self.condition = "execute if " + " ".join(args[1:-1])
-
-        self.text = self.begin()
+        super().__init__(stack, line, args)
+        
 
     def begin(self) -> list[str]:
         # This is a little hacky but it makes the camera slightly less incompatible with conditionals
@@ -30,5 +29,5 @@ class If(Control_Flow):
         ]
         return [""] + ["    " + self.add_prefix(line) for line in text]
 
-    def prefix(self) -> str:
+    def give_prefix(self) -> str:
         return "    " + self.add_prefix(f"{self.condition} if score {self.timer_name} {self.objective.name} matches {self.time} run")

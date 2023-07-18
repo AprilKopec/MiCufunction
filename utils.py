@@ -34,13 +34,14 @@ class Time:
         return Time(self.ticks + other.ticks)
     def __sub__(self, other):
         return Time(self.ticks - other.ticks)
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         return self.ticks < other.ticks
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.ticks == other.ticks
     def __str__(self) -> str:
         return str(self.ticks)
-    
+
+# These should really be methods of Camera_Position but i'm lazy
 def parse_coord(r, center):
         r = float(r)
         return r + 0.5 if center else r

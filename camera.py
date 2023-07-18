@@ -1,4 +1,5 @@
 from utils import Camera_Position
+from command_baseclass import MiCufunction_Command
 
 def rest(string, n = 2) -> str:
     return string.split(" ", n)[n]
@@ -7,9 +8,10 @@ def rest(string, n = 2) -> str:
 # But this would necessitate implementing slide through .mcfunction instead of Python
 # And that sounds terrible
 
-class Camera:
+class Camera(MiCufunction_Command):
     takes_block = False
     def __init__(self, stack: list, line: str, args: list[str]) -> None:
+        super().__init__(stack, line, args)
         self.parent = stack[-1]
         
         # This is hacky
@@ -35,7 +37,7 @@ class Camera:
         self.text = subcommand_dict[args[1]](args[2:])
 
         if args[1] != "setup":
-            self.text = [" ".join([self.parent.prefix(), line]) for line in self.text]
+            self.text = [self.add_prefix(line) for line in self.text]
 
     def setup(self, args):
         return [

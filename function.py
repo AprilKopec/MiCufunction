@@ -4,13 +4,9 @@ from command_baseclass import Control_Flow
 class Function(Control_Flow):
     takes_block = True
     def __init__(self, stack, line, args) -> None:
-        super.__init__(stack, line, args)
-
         self.function_name = args[1]
-
         self.camera = Camera_Position(0, 0, 0)
-
-        self.text = self.begin()
+        super().__init__(stack, line, args)
 
     def get_objective(self) -> Objective:
         return Objective(self.args[1].replace(":",".").replace("/","."))
@@ -37,5 +33,5 @@ class Function(Control_Flow):
           f"execute unless score {self.end_name} {self.objective.name} matches 1 run schedule function {self.function_name} 1t append"
         ]
 
-    def prefix(self) -> str:
+    def give_prefix(self) -> str:
         return f"execute if score {self.timer_name} {self.objective.name} matches {self.time} run"
