@@ -17,7 +17,7 @@ class MiCufunction_Command(ABC):
             if hasattr(item, 'prefix'):
                 return item.prefix()
             
-    def prefix(self, text: str, stack) -> str:
+    def add_prefix(self, text: str, stack) -> str:
         text_prefix = self.find_prefix(stack)
         return " ".join([text_prefix, text])
 
