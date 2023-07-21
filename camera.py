@@ -76,13 +76,13 @@ class Camera(MiCufunction_Command):
         assert len(args) > 2, "camera goto takes X Y Z coordinates as arguments"
         self.set_pos(args[0], args[1], args[2])
         if len(args) == 3:
-                return [f'execute positioned {args[0]} {args[1]} args{[2]} run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~']     
+                return [f'execute positioned {args[0]} {args[1]} {args[2]} run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~']     
         # camera goto X Y Z facing X Y Z
         else:
             assert args[3] == "facing", "Only supported syntax is 'camera goto X Y Z (facing X Y Z)'"
             assert len(args) == 7, "'facing' takes XYZ coordinates of a block the camera is facing towards"
             self.set_facing(args[4], args[5], args[6])
-            return [f'execute positioned {args[0]} {args[1]} {args[2]} facing {args[4]} args{[5]} args{[6]} run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~']
+            return [f'execute positioned {args[0]} {args[1]} {args[2]} facing {args[4]} {args[5]} {args[6]} run tp @e[tag=cutsceneCam] ~ ~ ~ ~ ~']
 
     # slide is currently implemented in Python
     # It will be much more versatile if implemented in .mcfunction but I don't wanna
