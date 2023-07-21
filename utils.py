@@ -39,8 +39,10 @@ class Time:
                 ticks = int(time[0:-1])
             else:
                 ticks = int(time)
-        else:
+        elif isinstance(time, int):
             ticks = time
+        else:
+            raise ValueError("Time class must be constructed with a str or int.")
         self.ticks = ticks
 
     def __add__(self, other):

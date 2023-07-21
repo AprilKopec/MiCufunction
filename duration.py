@@ -27,5 +27,5 @@ class Duration(MiCufunction_Command):
         return " ".join(prefix_text)
 
     def end(self)-> list[str]:
-        self.timekeeper.latest_time += Time(self.duration)
+        self.timekeeper.latest_time += self.duration
         return []
