@@ -21,6 +21,7 @@ class If(Control_Flow):
         return ["    " + self.add_prefix(line) for line in text] + [""]
 
     def end(self):
+        self.parent.time += Time(1) # We want the cutscene to wait until the tick after the if block executes
         self.latest_time = max(self.latest_time, self.time)
         text = [
           f'{self.condition} if score {self.timer_name} {self.objective.name} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective.name} 1',

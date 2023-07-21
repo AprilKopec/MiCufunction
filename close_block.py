@@ -1,5 +1,6 @@
 from conditional import If
 from command_baseclass import MiCufunction_Command
+from utils import Time
 
 class Close_Block(MiCufunction_Command):
     takes_block = False
@@ -14,6 +15,10 @@ class Close_Block(MiCufunction_Command):
             self.item = stack.pop()
             assert isinstance(self.item, If), "else must go after if"
             self.text = self.item.end()
+
+            # We can't have both the If and the Else delay the cutscene by a tick
+            # This is hacky and we should probably do something better
+            self.item.parent.time += Time(-1) 
 
             condition = self.item.condition.split(" ")
             condition[1] = "unless"
