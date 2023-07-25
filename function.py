@@ -6,6 +6,7 @@ class Function(Control_Flow):
     def __init__(self, stack, line, args) -> None:
         self.function_name = args[1]
         self.camera = Camera_Position(0, 0, 0)
+        self.forcequit = "force_quit"
         super().__init__(stack, line, args)
 
     def get_objective(self) -> Objective:
@@ -30,7 +31,7 @@ class Function(Control_Flow):
           f'execute if score {self.end_name} {self.objective.name} matches 1 run scoreboard players set {self.timer_name} {self.objective.name} 0',
           "",
           "### Run cutscene every tick ###",
-          f"execute unless score {self.end_name} {self.objective.name} matches 1 run schedule function {self.function_name} 1t append"
+          f"execute unless score {self.end_name} {self.objective.name} matches 1 unless score {self.forcequit} {self.objective.name} matches 1 run schedule function {self.function_name} 1t append"
         ]
 
     def give_prefix(self) -> str:
