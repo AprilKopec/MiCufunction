@@ -7,9 +7,10 @@ class If(Control_Flow):
     def __init__(self, stack, line, args) -> None:
         self.parent = stack[-1]
         self.condition = " ".join(args[1:-1])
+        super().__init__(stack, line, args)
+
         self.condition_name = self.add_number("condition", self.depth)
         self.condition_value = "1" # We will change this to 0 for else
-        super().__init__(stack, line, args)
 
     def begin(self) -> list[str]:
         # This is a little hacky but it makes the camera slightly less incompatible with conditionals
@@ -37,4 +38,15 @@ class If(Control_Flow):
         return "    " + self.add_prefix(f"execute if score {self.condition_name} matches {self.condition_value} if score {self.timer_name} {self.objective.name} matches {self.time} run")
     
 class Else(If):
-    pass
+    takes_block = True
+    def __init__(self, if_block) -> None:
+        assert isinstance(if_block, If), "else must follow if"
+        self.parent = if_block.parent
+        self.condition = " ".join(if_block.args[1:-1])
+        Control_Flow.__init__(self, if_block.stack, if_block.line, if_block.args)
+
+        self.condition_name = self.add_number("condition", self.depth)
+        self.condition_value = "0"
+
+    def begin(self) -> list[str]:
+        return super().begin()[1:] # We don't want to check the condition again
