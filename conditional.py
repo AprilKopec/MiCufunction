@@ -14,7 +14,7 @@ class If(Control_Flow):
         self.execute_if_condition = f'execute if score {self.condition_name} {self.objective} matches {self.condition_value}'
     
     def begin(self) -> list[str]:
-        # This is a little hacky but it makes the camera slightly less incompatible with conditionals
+        # This is a little hacky but it makes camera slide slightly less incompatible with conditionals
         self.camera = copy(self.parent.camera)
         text = [
           # Check condition, store result
