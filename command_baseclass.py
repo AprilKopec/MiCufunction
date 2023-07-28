@@ -35,9 +35,6 @@ class Control_Flow(MiCufunction_Command):
 
     def __init__(self, stack, line: str, args: List[str]):
         super().__init__(stack, line, args)
-        self.stack = stack
-        self.line = line
-        self.args = args
 
         # Eventually we can do the "don't bother with timing if there's no wait or duration" optimization
         self.time = Time(1)
