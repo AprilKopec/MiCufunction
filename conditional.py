@@ -56,7 +56,7 @@ class If(Control_Flow):
         output = ["\n"] + ["    " + self.add_prefix(line) for line in text]
 
         if not else_block:
-            output += [self.add_prefix(f"scoreboard players add {self.parent.timer_name} {self.objective} 1")]
+            output += [self.add_prefix(f"execute if score {self.end_name} {self.objective} matches 1 run scoreboard players add {self.parent.timer_name} {self.objective} 1")]
             self.parent.time += Time(1)
         return output
 
