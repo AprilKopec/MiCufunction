@@ -12,7 +12,7 @@ class Close_Block(MiCufunction_Command):
 
         elif line == "} else {":
             if_block = stack.pop()
-            self.text = if_block.end(True) + [""]
+            self.text = if_block.end(True)
             item = Else(if_block)
             self.text += item.begin()
 
