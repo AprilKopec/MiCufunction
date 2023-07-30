@@ -21,6 +21,7 @@ class If(Control_Flow):
         # This is a little hacky but it makes camera slide slightly less incompatible with conditionals
         self.camera = copy(self.parent.camera)
 
+        # Refactor this later; the condition_checked value is unnecessary now that we increment the parent timer after setting up the if block
         text0 = [
           # Check condition, store result
           f"execute if {self.condition} unless score {self.condition_checked} {self.objective} matches 1 run scoreboard players set {self.condition_name} {self.objective} 1",
