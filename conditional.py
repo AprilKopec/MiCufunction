@@ -54,8 +54,10 @@ class If(Control_Flow):
           f'{self.execute_if_condition} if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 0'
         ]
         output = [""] + ["    " + self.add_prefix(line) for line in text]
+
         if not else_block:
-            self.parent.time += Time(1) # We want the cutscene to wait until the tick after the if block executes to continue
+            output += [self.add_prefix(f"scoreboard players add {self.parent.timer_name} {self.objective} 1")]
+            self.parent.time += Time(1)
         return output
 
     def give_prefix(self) -> str:
