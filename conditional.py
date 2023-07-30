@@ -53,6 +53,8 @@ class If(Control_Flow):
             text1 = [
                 # Reset the timer for next time function is used
                 f'execute if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.timer_name} {self.objective} 0',
+                # Reset the condition
+                f'execute if score {self.end_name} {self.objective} mathes 1 run scoreboard players set {self.condition_name} {self.objective} -1'
                 # Unpause the parent timer
                 f'execute if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.parent.pause_name} {self.objective} 0',
                 # Increment the timer so there isn't a delay before commands after the If block
