@@ -48,5 +48,45 @@ function tt2:gronk/tournament/pythagoras_part2 {
         wait 40
     }
 
+    camera goto 858 87 8977 facing 858 60 8977
+    wait 20
+    say <Mr. Pythagoras> Unleash the bees.
+    
+    duration 37 {
+        command summon bee 848 75 8977 {Tags:["pythBee"]}
+        command summon bee 840 75 8977 {Tags:["pythBee"]}
+        command summon bee 832 75 8977 {Tags:["pythBee"]}
+        command summon bee 824 75 8977 {Tags:["pythBee"]}
+    }
+
+    wait 10
+    camera goto 851 78 8986 facing 851 74 8975
+    command scoreboard players set @a PythagorasTrigger 0
+    command scoreboard players enable @a PythagorasTrigger
+    command tellraw @a ["<Mr. Pythagoras> How many bees?","\n",{"text":"95","color":"gold","clickEvent":{"action":"run_command","value":"/trigger PythagorasTrigger set 1"}},"\n",{"text":"5","color":"#9ACD32","clickEvent":{"action":"run_command","value":"/trigger PythagorasTrigger set 2"}},"\n",{"text":"270","color":"aqua","clickEvent":{"action":"run_command","value":"/trigger PythagorasTrigger set 3"}},"\n",{"text":"148","color":"light_purple","clickEvent":{"action":"run_command","value":"/trigger PythagorasTrigger set 4"}}]
+    duration 8s {
+        camera slide to 821 78 8986
+    }
+
+    wait 8s
+    camera goto 882 71 8977 facing 858 72 8977
+    wait 1s
+    say <Mr. Pythagoras> This episode of the Mr. Pythagoras show is dedicated to the bees
+    wait 3s
+    say <Mr. Pythagoras> The decline of bee populations poses a critical threat to global ecosystems and food security due to the crucial role they play in pollination.
+    wait 7s
+    say <Mr. Pythagoras> Last time I visited the birthplace of all bees with my time machine to gather more for the show, there were at most 500 left.
+    wait 6s
+    say <Mr. Pythagoras> At this rate, I'll only be able to run the show another 3.378 times.
+    wait 4s
+    say <Mr. Pythagoras> That's right, those of you who answered 148 were correct!
+    wait 3s
+
+    camera goto 859 71 8979 facing 858 72 8977
+    wait 1s
+    say <Mr. Pythagoras> Next, I'll be giving you each 64 emeralds.
+    wait 2s
+    say <Mr. Pythagoras> But you'll only be able to keep them if you can spend them all!
+
     camera kill
 }
