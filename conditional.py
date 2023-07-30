@@ -27,14 +27,14 @@ class If(Control_Flow):
           f"execute unless score {self.condition_name} {self.objective} matches 1 unless score {self.condition_checked} {self.objective} matches 1 run scoreboard players set {self.condition_name} 0",
           # We only want to check condition once
           f"scoreboard players set {self.condition_checked} {self.objective} 1",
-          # If condition met, pause parent timer
-          f"{self.execute_if_condition} run scoreboard players set {self.parent.pause_name} {self.objective} 1",
           # Increment parent timer by one so that if an If Block starts the same tick that another command was executed, that command isn't executed the entire time the parent timer is paused
-          f"scoreboard players add {self.parent.timer_name} {self.objective} 1",
+          f"scoreboard players add {self.parent.timer_name} {self.objective} 1"     
         ]
         text0 = ["    " + self.add_prefix(line) for line in text0]
         self.parent.time += Time(1)
         text1 = [
+          # If condition met, pause parent timer
+          f"{self.execute_if_condition} run scoreboard players set {self.parent.pause_name} {self.objective} 1",
           # If condition met and not paused by a further if block, increment timer
           f"{self.execute_if_condition} unless score {self.pause_name} {self.objective} matches 1 run scoreboard players add {self.timer_name} {self.objective} 1",
           # Make sure function can replay correctly
@@ -51,7 +51,6 @@ class If(Control_Flow):
           # Reset the timer for next time function is used
           f'{self.execute_if_condition} if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.timer_name} {self.objective} 0',
           # Reset condition_checked
-          f'{self.execute_if_condition}'
           f'{self.execute_if_condition} if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 0'
         ]
         output = [""] + ["    " + self.add_prefix(line) for line in text]
@@ -77,4 +76,13 @@ class Else(If):
         Control_Flow.__init__(self, if_block.stack, if_block.line, if_block.args)
 
     def begin(self) -> list[str]:
-        return super().begin()[1:] # We don't want to check the condition again
+        # This is a copy paste of part of If so it should probably be refactored
+        text = [
+          # If condition met, pause parent timer
+          f"{self.execute_if_condition} run scoreboard players set {self.parent.pause_name} {self.objective} 1",
+          # If condition met and not paused by a further if block, increment timer
+          f"{self.execute_if_condition} unless score {self.pause_name} {self.objective} matches 1 run scoreboard players add {self.timer_name} {self.objective} 1",
+          # Make sure function can replay correctly
+          f"{self.execute_if_condition} run scoreboard players set {self.end_name} {self.objective} 0"
+        ]
+        return ["    " + self.add_prefix(line) for line in text]
