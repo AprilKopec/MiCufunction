@@ -24,10 +24,8 @@ class If(Control_Flow):
         # Refactor this later; the condition_checked value is unnecessary now that we increment the parent timer after setting up the if block
         text0 = [
           # Check condition, store result
-          f"execute if {self.condition} unless score {self.condition_checked} {self.objective} matches 1 run scoreboard players set {self.condition_name} {self.objective} 1",
-          f"execute unless score {self.condition_name} {self.objective} matches 1 unless score {self.condition_checked} {self.objective} matches 1 run scoreboard players set {self.condition_name} {self.objective} 0",
-          # We only want to check condition once
-          f"scoreboard players set {self.condition_checked} {self.objective} 1",
+          f"execute if {self.condition} run scoreboard players set {self.condition_name} {self.objective} 1",
+          f"execute unless score {self.condition_name} {self.objective} matches 1 run scoreboard players set {self.condition_name} {self.objective} 0",
           # Make sure function can replay correctly
           f"{self.execute_if_condition} run scoreboard players set {self.end_name} {self.objective} 0",
           # Increment parent timer by one so that if an If Block starts the same tick that another command was executed, that command isn't executed the entire time the parent timer is paused
