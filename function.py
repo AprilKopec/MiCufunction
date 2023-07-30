@@ -45,7 +45,7 @@ class Function(Control_Flow):
           f"execute if score global_timer {self.objective} matches 0 run scoreboard players set {self.forcequit} {self.objective} 1",
           f"scoreboard players operation global_timer {self.objective} = t Tt2GlobalTimer",
           # Schedule function if not over and not forcequit
-          f"execute unless score {self.end_name} {self.objective} matches 1 unless score {self.forcequit} {self.objective} matches 1 run schedule function {self.function_name} 1t append",
+          f"execute unless score {self.end_name} {self.objective} matches 1 unless score {self.forcequit} {self.objective} matches 1 run schedule function {self.function_name} 1t replace"
           # Maybe we want to set this up so that if the cutscene runs multiple times it only resets the extras? Might be more resilient to glitches then
         ]
 
