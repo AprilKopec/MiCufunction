@@ -11,7 +11,6 @@ class If(Control_Flow):
         self.condition_value = "1" # We will change this to 0 for else
         self.stack = stack
         self.condition_name = self.add_number("condition", self.get_depth())
-        self.condition_checked = self.add_number("condition_checked", self.get_depth())
         super().__init__(stack, line, args)    
     
     def begin(self) -> list[str]:
