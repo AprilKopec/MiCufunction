@@ -21,20 +21,27 @@ class If(Control_Flow):
         # This is a little hacky but it makes camera slide slightly less incompatible with conditionals
         self.camera = copy(self.parent.camera)
 
-        text = [
+        text0 = [
           # Check condition, store result
           f"execute if {self.condition} unless score {self.condition_checked} {self.objective} matches 1 run scoreboard players set {self.condition_name} 1",
           f"execute unless score {self.condition_name} {self.objective} matches 1 unless score {self.condition_checked} {self.objective} matches 1 run scoreboard players set {self.condition_name} 0",
           # We only want to check condition once
           f"scoreboard players set {self.condition_checked} {self.objective} 1",
           # If condition met, pause parent timer
-          f"{self.execute_if_condition} run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 1",
+          f"{self.execute_if_condition} run scoreboard players set {self.parent.pause_name} {self.objective} 1",
+          # Increment parent timer by one so that if an If Block starts the same tick that another command was executed, that command isn't executed the entire time the parent timer is paused
+          f"scoreboard players add {self.parent.timer_name} {self.objective} 1",
+        ]
+        text0 = ["    " + self.add_prefix(line) for line in text0]
+        self.parent.time += Time(1)
+        text1 = [
           # If condition met and not paused by a further if block, increment timer
           f"{self.execute_if_condition} unless score {self.pause_name} {self.objective} matches 1 run scoreboard players add {self.timer_name} {self.objective} 1",
           # Make sure function can replay correctly
           f"{self.execute_if_condition} run scoreboard players set {self.end_name} {self.objective} 0"
         ]
-        return ["    " + self.add_prefix(line) for line in text] + [""]
+        text1 = ["    " + self.add_prefix(line) for line in text1]
+        return text0 + text1 + [""]
 
     def end(self, else_block: bool = False):
         self.latest_time = max(self.latest_time, self.time)
