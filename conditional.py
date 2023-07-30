@@ -47,9 +47,7 @@ class If(Control_Flow):
           # End the block after the last event ends
           f'{self.execute_if_condition} if score {self.timer_name} {self.objective} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective} 1',
           # Reset the timer for next time function is used
-          f'{self.execute_if_condition} if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.timer_name} {self.objective} 0',
-          # Reset condition_checked
-          f'{self.execute_if_condition} if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.parent.pause_name} {self.parent.objective.name} 0'
+          f'{self.execute_if_condition} if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.timer_name} {self.objective} 0'
         ]
         output = ["\n"] + ["    " + self.add_prefix(line) for line in text]
 
@@ -71,7 +69,6 @@ class Else(If):
         self.condition = if_block.condition # Unused, but crashes when you call super().begin() if not set. Maybe refactor?
         self.condition_name = if_block.condition_name
         self.condition_value = "0"
-        self.condition_checked = if_block.condition_checked
         self.execute_if_condition = f'execute if score {self.condition_name} {if_block.objective} matches {self.condition_value}'
         Control_Flow.__init__(self, if_block.stack, if_block.line, if_block.args)
 
