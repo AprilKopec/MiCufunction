@@ -27,7 +27,7 @@ function tt2:gronk/tournament/pythagoras_part2 {
     wait 299
 
     # Calculus question results
-    camera goto 855.5 72 8980.5 facing 858 72 8977
+    camera goto 860 74 8977 facing 842 72 8977
     wait 20
 
     command summon item 848 79 8977 {Item:{id:"minecraft:cod_bucket",Count:1b,tag:{display:{Name:'{"text":"\\"Mr. Pythagoras Burger\\"","color":"aqua"}',Lore:['{"text":"Allegedly","color":"light_purple","italic":true}']}}}}
@@ -87,6 +87,12 @@ function tt2:gronk/tournament/pythagoras_part2 {
     say <Mr. Pythagoras> Next, I'll be giving you each 64 emeralds.
     wait 2s
     say <Mr. Pythagoras> But you'll only be able to keep them if you can spend them all!
+    wait 3s
+    command give @a emerald 64
+    wait 1t
+    command clone 835 21 9008 839 30 9013 843 79 8990
+    wait 1t
 
+    camera goto 845 83 8991 facing 845 84 8994
     camera kill
 }
