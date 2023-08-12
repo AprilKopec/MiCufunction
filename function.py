@@ -20,7 +20,7 @@ class Function(Control_Flow):
 
     def get_address(self) -> str:
         # This may need to be slightly altered depending on what format we want the file address to be in
-        address = re.split(r'[:/]', self.function)
+        address = re.split(r'[:/]', self.function_name)
         address.insert(1, "functions")
         address[-1] += ".mcfunction"
         address = "/".join(address)
