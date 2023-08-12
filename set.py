@@ -2,7 +2,6 @@ from basic_commands import MiCufunction_Command
 from utils import Objective, Score_Holder
 
 class Set(MiCufunction_Command):
-    takes_block = False
 
     def __init__(self, stack, line, args) -> None:
         super().__init__(stack, line, args)

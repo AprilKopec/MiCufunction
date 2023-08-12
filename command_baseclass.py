@@ -3,11 +3,14 @@ from abc import abstractmethod
 from typing import List
 
 class MiCufunction_Command:
+    takes_block = False
+    has_filename = False
+    can_pop_filename = False
+
     def __init__(self, stack, line: str, args: List[str]):
         self.stack = stack
         self.line = line
         self.args = args
-        
         self.prefixer = self.find_prefixer(stack)
 
     def find_timekeeper(self, stack):

@@ -12,7 +12,7 @@ supported_commands = {"function": Function,
                       "command": Command,
                       "wait": Wait,
                       "if": If,
-                      "camera": Camera, 
+                      "camera": Camera,
                       "}": Close_Block,
                       }
 
@@ -25,9 +25,12 @@ def get_command_type(line, args, line_num):
     return command_type
 
 class Program:
+
     def __init__(self) -> None:
         self.stack = []
-        self.outlines = []
+        self.outlines = {}
+        self.current_file = []
+        self.functions = []
 
     def add_command(self, line: str, line_num: int):
         line = line.strip()
@@ -37,7 +40,16 @@ class Program:
 
         try:
             item = command_type(self.stack, line, args)
-            self.outlines += item.text
+
+            if command_type.has_filename:
+                self.current_file.append(item.filename) # type: ignore
+                self.outlines[self.current_file[-1]] = []
+
+            if len(self.current_file) != 0 or command_type != Comment:
+              self.outlines[self.current_file[-1]] += item.text
+
+            if command_type.can_pop_filename and item.pop_filename: # type: ignore
+                self.current_file.pop()
         except Exception as e:
             print(f"Error on line {line_num}: {e.args[0]}")
             raise
@@ -48,17 +60,23 @@ class Program:
 
 
 def main():
-    # FILENAME = sys.argv[1]
-    FILENAME = "example2.micufunction"
+    FILENAME = sys.argv[1]
     if(FILENAME.split('.')[-1].lower() != "micufunction"):
         raise Exception(".micufunction file not provided")
+    import pathlib
 
     with open(FILENAME, 'r', encoding='utf-8') as infile:
         lines = infile.readlines()
         program = Program()
         for i in range(len(lines)):
             program.add_command(lines[i], i+1)
-        for line in program.outlines:
-            print(line)
+        for filename, lines in program.outlines.items():
+            root = pathlib.Path(sys.argv[2])
+            path = root.joinpath(filename)
+            assert root.relative_to(path) # path traversal
+            path.parent.mkdir(parents=True)
+            with path.open('w') as file:
+                file.writelines(lines)
+
 
 main()

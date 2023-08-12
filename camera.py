@@ -9,7 +9,6 @@ def rest(string, n = 2) -> str:
 # And that sounds terrible
 
 class Camera(MiCufunction_Command):
-    takes_block = False
     def __init__(self, stack: list, line: str, args: list[str]) -> None:
         super().__init__(stack, line, args)
         self.parent = stack[-1]

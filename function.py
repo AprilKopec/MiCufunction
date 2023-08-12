@@ -4,9 +4,10 @@ import re
 
 class Function(Control_Flow):
     takes_block = True
+    has_filename = True
     def __init__(self, stack, line, args) -> None:
         self.function_name = args[1]
-        self.address = self.get_address()
+        self.filename = self.get_filename()
         self.camera = Camera_Position(0, 0, 0)
 
         # These are only needed for cutscenes, if we implement functions that aren't cutscenes
@@ -18,13 +19,13 @@ class Function(Control_Flow):
     def get_objective(self) -> Objective:
         return Objective(self.args[1].replace(":",".").replace("/","."))
 
-    def get_address(self) -> str:
+    def get_filename(self) -> str:
         # This may need to be slightly altered depending on what format we want the file address to be in
         address = re.split(r'[:/]', self.function_name)
         address.insert(1, "functions")
         address[-1] += ".mcfunction"
         address = "/".join(address)
-        return address
+        return "data/" + address
 
     def begin(self) -> list[str]:
         return [

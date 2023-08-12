@@ -6,10 +6,9 @@ def rest(string):
     return string.split(" ", 1)[1]
 
 class Basic_Command(MiCufunction_Command):
-    takes_block = False
     def __init__(self, stack, line: str, args: List[str]):
         super().__init__(stack, line, args)
-        
+
         self.pretext()
         self.text = self.get_text()
 
