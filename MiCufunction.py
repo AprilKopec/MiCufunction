@@ -73,7 +73,7 @@ def main():
         for filename, lines in program.outlines.items():
             root = pathlib.Path(sys.argv[2])
             path = root.joinpath(filename)
-            assert root.relative_to(path) # path traversal
+            assert path.relative_to(root) # path traversal
             path.parent.mkdir(parents=True)
             with path.open('w') as file:
                 file.writelines(lines)
