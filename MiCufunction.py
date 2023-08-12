@@ -76,7 +76,7 @@ def main():
             assert path.relative_to(root) # path traversal
             path.parent.mkdir(parents=True,exist_ok=True)
             with path.open('w') as file:
-                file.writelines(lines)
+                file.writelines(line + "\n" for line in lines)
 
 
 main()
