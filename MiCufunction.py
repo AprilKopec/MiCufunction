@@ -53,7 +53,7 @@ def main():
     if(FILENAME.split('.')[-1].lower() != "micufunction"):
         raise Exception(".micufunction file not provided")
 
-    with open(FILENAME, 'r') as infile:
+    with open(FILENAME, 'r', encoding='utf-8') as infile:
         lines = infile.readlines()
         program = Program()
         for i in range(len(lines)):

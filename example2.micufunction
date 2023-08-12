@@ -1,12 +1,19 @@
-function tt2:tokyo/dialogue/math_club_pass {
-    if score Lemmata Stats matches ..40 {
-        say <Math Club Officer> Welcome to the Math Club office. Once you have found at least 40 lemmata, you can come here to apply to join the math club.
+function tt2:tokyo/dialogue/math_club {
+    if score player HasMathClubPass matches 1.. {
+        if score player HasMathClubPass matches 1 {
+            command tellraw @a ["","<Math Club Member> Wow, you have a ",{"text":"Math Club Pass (Key Item)!","bold":true,"italic":true,"color":"gold"}]
+            wait 2s
+            say <Math Club Member> Welcome to the math club!
+            command scoreboard players set player HasMathClubPass 2
+        } else {
+            say <Math Club Member> Hi Terry!
+            wait 2s
+            say <Math Club Member> Math is pretty cool, isn't it!
+        }
     } else {
-        say <Math Club Officer> Wow! You have 40 lemmata!
-        wait 4s
-        command tellraw @a ["","<Math Club Officer> Here's your ",{"text":"Math Club Pass (Key Item)!","bold":true,"italic":true,"color":"gold"}]
-        command give @a music_disc_5{display:{Name:'{"text":"Math Club Pass","color":"gold","bold":true,"italic":true}',Lore:['{"text":"(Key Item)","color":"light_purple","italic":true}']}} 1
-        command scoreboard objectives add HasMathClubPass dummy
-        command scoreboard players set player HasMathClubPass 1
+        command tellraw @a ["","<Math Club Member> Sorry, but we only allow true mathematicians—those with ",{"text":"x","italic":true}," lemmata, where ",{"text":"x","italic":true}," ≥ 40—to join our club.","\n","<Math Club Member> If you have ",{"text":"x","italic":true}," lemmata, you can get a ",{"text":"Math Club Pass (Key Item)","italic":true,"color":"gold"}," from the Math Club office in the RLM building at the University."]
+        command execute as @a at @s if entity @e[tag=MathClubVillager,distance=..2] run tp @s ~-6 ~2 ~-6
+        wait 1t
+        command setblock 1260 20 7043 minecraft:blue_wool
     }
 }
