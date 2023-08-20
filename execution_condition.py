@@ -31,7 +31,7 @@ class Execute_Condition:
     def evaluate(self, expression: str, scope: Scope):
         # This can plausibly break if you have a string with ~()&| in it in NBT in a literal
         # I don't anticipate that coming up, and if it does we can just define a variable and then use it instead of making a literal
-        #
+        expression = expression.strip()
         # Case 1: Stuff we need to count parens for: expression in parens, &, or |
         # This is left associative, but please just use parens 
         if expression[0] == "(" or "&" in expression or "|" in expression:
@@ -42,9 +42,9 @@ class Execute_Condition:
                 elif expression[i] == ")":
                     paren_bal -= 1
                 elif expression[i] == "&" and paren_bal == 1:
-                    return Execute_Condition(expression[1:i-1], scope) & Execute_Condition(expression[i+2:], scope)
+                    return Execute_Condition(expression[1:i], scope) & Execute_Condition(expression[i+1:], scope)
                 elif expression[i] == "|" and paren_bal == 1:
-                    return Execute_Condition(expression[1:i-1], scope) | Execute_Condition(expression[i+2:], scope)
+                    return Execute_Condition(expression[1:i], scope) | Execute_Condition(expression[i+1:], scope)
                 else:
                     continue
             if not paren_bal == 0:
