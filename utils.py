@@ -97,7 +97,7 @@ class Execute_Condition:
         inverted_atoms = [[~x for x in conjunction] for conjunction in self.conditions]
         return Execute_Condition([list(conjunction) for conjunction in product(*inverted_atoms)])
     
-    def evaluation_commands(self, score_holder: str, objective: Objective) -> list[str]:
+    def evaluation_commands(self, score_holder: Score_Holder, objective: Objective) -> list[str]:
         text = [f'scoreboard players set {score_holder} {objective} 0']
         text += [f'execute {" ".join(conjunction)} run scoreboard players set {score_holder} {objective} 1' for conjunction in self.conditions]
 
