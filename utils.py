@@ -2,6 +2,7 @@ from functools import total_ordering
 from typing import Union
 import re
 from math import atan2, degrees, sqrt
+from itertools import product
 
 class Objective:
     def __init__(self, name: str, criterion = "dummy") -> None:
@@ -55,6 +56,51 @@ class Time:
         return self.ticks == other.ticks
     def __str__(self) -> str:
         return str(self.ticks)
+
+class Execute_Condition_Atom:
+    def __init__(self, condition: str):
+        self.condition = " ".split(condition,1)
+        assert self.condition[0] in ["if", "unless"], ValueError("Conditional execution subcommands must begin with 'if' or 'unless'.")
+        
+    def __invert__(self):
+        if self.condition[0] == "if":
+            return ["unless", self.condition[1]]
+        else:
+            return ["if", self.condition[1]]
+        
+    def __str__(self):
+        return " ".join(self.condition)
+
+class Execute_Condition:
+    # This class contains a boolean algebraic combination of atoms in disjunctive normal form
+    # self.conditions is a set of sets of atoms; the inner sets are ANDed, and then the outer sets are ORed.
+    def __init__(self, conditions: list[list[Execute_Condition_Atom]]):
+        self.conditions = conditions
+
+    def __or__(self, other) -> [list]:
+        # This is easy, just concatenate the disjunctions
+        return Execute_Condition(self.conditions + other.conditions)
+    
+    def __and__(self, other):
+        # ((p & q) | (r & s)) & ((x & y) | (z & w))
+        # <-> ((p & q & x & y) | (p & q & z & w) | (r & s & x & y) | (r & s & z & w))
+        # For both disjunctions to be true, one conjunction from each must be true
+        # So the conjunctions in the result consist of one conjunction from each disjunction, appended together
+        return Execute_Condition([[a + b for b in other.conditions] for a in self.conditions])
+    
+    def __invert__(self) -> [list]:
+        # ~((x & y) | (z & w))
+        # <-> ((~x & ~z) | (~x & ~w) | (~y & ~z) | (~y & ~w))
+        # For the disjunction to be false, each conjunction must be false
+        # So one variable from each conjunction must be false
+        # So the conjunctions in the inverse are consist of the inverse of one variable from each original conjunction
+        inverted_atoms = [[~x for x in conjunction] for conjunction in self.conditions]
+        return Execute_Condition([list(conjunction) for conjunction in product(*inverted_atoms)])
+    
+    def evaluation_commands(self, score_holder: str, objective: Objective) -> list[str]:
+        text = [f'scoreboard players set {score_holder} {objective} 0']
+        text += [f'execute {" ".join(conjunction)} run scoreboard players set {score_holder} {objective} 1' for conjunction in self.conditions]
+
 
 # These should really be methods of Camera_Position but i'm lazy
 def parse_coord(r, center):
