@@ -1,8 +1,30 @@
 from functools import total_ordering
+from collections.abc import MutableMapping
 from typing import Union
 import re
 from math import atan2, degrees, sqrt
-from itertools import product
+
+@MutableMapping
+class Scope:
+    def __init__(self):
+        self.var_dict = {}
+
+    def __getitem__(self, var_name: str):
+        return self.var_dict[var_name]
+
+    def __setitem__(self, var_name: str, var_value):
+        if re.match(r'^[a-zA-Z0-9_]$', var_name) is None:
+            raise ValueError(var_name + " is not a valid variable name")
+        self.var_dict[var_name] = var_value
+
+    def __iter__(self):
+        return iter(self.data)
+    
+    def __len__(self):
+        return len(self.var_dict)
+    
+    def __contains__(self, var_name):
+        return var_name in self.var_dict
 
 class Objective:
     def __init__(self, name: str, criterion = "dummy") -> None:
