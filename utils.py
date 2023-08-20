@@ -87,6 +87,7 @@ def parse_coord(r, center):
 # Center if given int, don't if given float
 def parse_pos(x, y, z):
     if isinstance(x, str): # slightly hacky
+        # There's a minor bug here; y should still be true if this is being used to get a facing
         return (parse_coord(x, "." in x), parse_coord(y, False), parse_coord(z, "." in z))
     else:
         return (float(x), float(y), float(z))

@@ -33,6 +33,7 @@ Currently supported commands:
 - `say`
 - `duration`
 - `if` / `else`
+- `camera`
 
 ## function
 `function` takes a namespaced function title as an argument—it should be the same as the argument that /function will take in Minecraft. It starts with `tt2:` (or another datapack namespace) and then the file location relative to the tt2/functions folder. (Don't add .mcfunction at the end of the argument).
@@ -40,7 +41,7 @@ Currently supported commands:
 `function` opens a code block and will produce a `.mcfunction` file that implements the contents of the code block.
 
 ## wait
-`wait` takes a duration, which can be written in either ticks or seconds. If using ticks you can either just write an integer or write an integer with t appended. If using seconds you append s to the integer. So `20`, `20t`, and `1s` all do the same thing. You can also do `1.5s`, which gets casted to an integer number of ticks. (Probably just don't do this for now until I verify how rounding works.)
+`wait` takes a duration, which can be written in either ticks or seconds. If using ticks you can either just write an integer or write an integer with t appended. If using seconds you append s to the integer. So `20`, `20t`, and `1s` all do the same thing. You can also do `1.5s`, which gets casted to an integer number of ticks. (Probably use ticks rather than fractional seconds if rounding might cause issues.)
 
 `wait` is supported inside functions, `if` blocks, and `else` blocks. Do not put `wait` inside a `duration` block.
 
@@ -56,8 +57,51 @@ Currently supported commands:
 `duration` does not update the cutscene timer; the contents of a `duration` block will run in parallel with any code following the `duration` block. Consequently, it is not (currently) supported to have an `if` block overlapping a `duration` block; make sure any `duration`s have concluded before you open an `if`.
 
 ## if / else
-`if` runs code based on a certain condition. The argument `if` takes is a condition which can be evaluated by the `execute if` subcommand. The above example uses `score Lemmata Stats matches 20..`, which is a condition that might appear in a command like `execute if score Lemmata Stats matches 20.. run ...`.
+`if` runs a subcutscene based on an `execute condition``. An execute condition `execute if` subcommand. The above example uses `score Lemmata Stats matches 20..`, which is a condition that might appear in a command like `execute if score Lemmata Stats matches 20.. run ...`.
 
-`else` works the same as `if`, but it evaluates the condition as `execute unless` instead.
+`else` works the same as `if`, but it evaluates the condition as its opposite
 
-if probably needs some work.
+## camera
+The camera command is an interface for moving around the player as a camera in spectator mode. I (April) didn't focus too hard on making this *incredibly* easy to use for people other than me, but I don't think it's too too complicated.
+Optional subcommands are in parentheses.
+
+### camera setup
+Put this at the top of any micufunction where you intend to use the camera system. It adds the commands that teleport the player to the camera every tick (when the camera is enabled).
+
+### camera summon at [X] [Y] [Z] (facing [X2] [Y2] [Z2])
+Places the camera at the block [X] [Y] [Z] as if the player ran a /tp command there.
+Faces the camera towards the center of the block X2 Y2 Z2.
+
+### camera enable (target)
+Turn the camera on (put the player in spectator mode, enable tping to the camera every tick).
+Specifically it turns the camera on for `target`, which defaults to `@a[gamemode=adventure]`.
+
+### camera goto [X] [Y] [Z] (facing [X2] [Y2] [Z2])
+This works like `summon`, except when you already have a camera around.
+
+### camera slide
+This command is used to slide the camera. It has two versions.
+
+#### camera slide to [X] [Y] [Z]
+This command relies on being inside a `duration` block. It automatically calculates and applies the offset required to move the camera from the position it was in before the `duration` block to [X] [Y] [Z] over the course of the `duration` block.
+
+`camera slide to`'s implementation currently relies on state stored in the Python execution of the program. This means it doesn't play particularly well with `if` blocks. If you move the camera during an `if` block, and then try to `slide` afterwards, the offset calculation won't use the updated position, because the Python program could not tell which branch of the condition would be ran.
+
+tl;dr if you want to use `camera slide to` then you should make sure you have done a `goto` since any `if` blocks which move the camera.
+
+#### camera slide by [dx] [dy] [dz] ([danglex] [dangley])
+This slides by a specified offset each tick of a `duration` block. I think technically you could also use it outside of a duration block if you wanted to just move the camera by a certain relative amount.
+
+### camera pause
+This leaves the camera entity around, but detaches the player from the camera and puts them back in adventure mode. You can unpause it with `enable` if you want.
+
+### camera kill
+This detaches the player from the camera and then kills the camera entity.
+You should run this at the end of any cutscene that uses the camera.
+
+# Planned features
+Some of these are partially implemented
+- Variables
+- `execute condition` data type
+- `elif`
+- `wait until/while [execute condition]`
