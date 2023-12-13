@@ -20,7 +20,7 @@ function test:test1 {
 }
 ```
 
-This code compiles to a .mcfunction which, when ran, will output "<Character A> hi" to chat on the first tick, teleport everyone up by one block each tick for thirty ticks beginning on the eleventh tick, and then on the 41st tick will output text to chat depending on whether you have 20 Money or not. 
+This code compiles to a .mcfunction which, when ran, will output `<Character A> hi` to chat on the first tick, teleport everyone up by one block each tick for thirty ticks beginning on the eleventh tick, and then on the 41st tick will output text to chat depending on whether you have 20 Money or not. 
 
 Currently supported commands:
 - `function`
