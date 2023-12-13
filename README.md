@@ -1,30 +1,26 @@
 # MiCufunction
-MiCufunction is a .mcfunction scripting language using Python3.
+MiCufunction is a .mcfunction scripting language compiled using Python3. It mainly makes creating timed sequences of events much easier; it tracks a timer for you, rather than you having to make a timer yourself and manually sum up delays and so on. It also has a camera system, if you want to slide the player's perspective over a region or something, and various other convenience features.
 
-How to compile:
-TODO: implement compilation
+To compile, run `MiCufunction.py [file path to .micufunction file] [root data pack folder]` on a command line. Xero has some scripts for automatically pulling a data pack from GitHub and compiling all of the .micufunction files in it which you can probably ask him for if you want. 
 
 Here is an example .micufunction:
 ```
-function tt2:misc/example_micufunction {
-    say <Miku> hi
+function test:test1 {
+    say <Character A> Hello!
     # This is a comment
     wait 10
     duration 30t {
-        command gamemode creative @a
-        say <Miku> hello!
+        command execute as @a at @s run tp @s ~ ~1 ~
     }
-    if score Lemmata Stats matches 20.. {
-        say Your mathematical intuition says you have at least 20 lemmata.
+    if score Money Stats matches 20.. {
+        say You upgraded your item!
     } else {
-        say Your mathematical intuition says you do not have 20 lemmata.
-        wait 4s
-        say Your mathematical intuition calls you a fool.
+        say You cannot afford to upgrade your item.
     }
 }
 ```
 
-This code compiles to a .mcfunction which, when ran, will output "<Miku> hi" to chat on the first tick, set everyone to creative and spam chat with "<Miku> hello!" for thirty ticks beginning on the eleventh tick, and then on the 41st tick will output text to chat depending on whether you have 20 lemmata or not. 
+This code compiles to a .mcfunction which, when ran, will output "<Character A> hi" to chat on the first tick, teleport everyone up by one block each tick for thirty ticks beginning on the eleventh tick, and then on the 41st tick will output text to chat depending on whether you have 20 Money or not. 
 
 Currently supported commands:
 - `function`
@@ -36,12 +32,12 @@ Currently supported commands:
 - `camera`
 
 ## function
-`function` takes a namespaced function title as an argument—it should be the same as the argument that /function will take in Minecraft. It starts with `tt2:` (or another datapack namespace) and then the file location relative to the tt2/functions folder. (Don't add .mcfunction at the end of the argument).
+`function` takes a namespaced function title as an argument—it should be the same as the argument that /function will take in Minecraft. It starts with a namespace `[namespace]:` and then the file location relative to the `data/[namespace]/functions` folder. (Don't add .mcfunction at the end of the argument).
 
 `function` opens a code block and will produce a `.mcfunction` file that implements the contents of the code block.
 
 ## wait
-`wait` takes a duration, which can be written in either ticks or seconds. If using ticks you can either just write an integer or write an integer with t appended. If using seconds you append s to the integer. So `20`, `20t`, and `1s` all do the same thing. You can also do `1.5s`, which gets casted to an integer number of ticks. (Probably use ticks rather than fractional seconds if rounding might cause issues.)
+`wait` takes a duration, which can be written in either ticks or seconds. If using ticks you can either just write an integer or write an integer with t appended. If using seconds you append s to the integer. So `20`, `20t`, and `1s` all do the same thing. You can also do `1.5s`, which gets casted to an integer number of ticks. (It might be best use ticks rather than fractional seconds if rounding might cause issues.)
 
 `wait` is supported inside functions, `if` blocks, and `else` blocks. Do not put `wait` inside a `duration` block.
 

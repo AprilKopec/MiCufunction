@@ -31,7 +31,8 @@ execute if score t test.test1 matches 31 run scoreboard players set end test.tes
 execute if score end test.test1 matches 1 run scoreboard players set t test.test1 0
 
 ### Run cutscene every tick ###
-scoreboard players operation global_timer test.test1 -= t Tt2GlobalTimer
+execute store result score temp test.test1 run time query gametime
+scoreboard players operation global_timer test.test1 -= temp test.test1
 execute if score global_timer test.test1 matches 0 run scoreboard players set force_quit test.test1 1
-scoreboard players operation global_timer test.test1 = t Tt2GlobalTimer
+scoreboard players operation global_timer test.test1 = temp test.test1
 execute unless score end test.test1 matches 1 unless score force_quit test.test1 matches 1 run schedule function test:test1 1t replace
