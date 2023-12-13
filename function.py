@@ -52,9 +52,10 @@ class Function(Control_Flow):
           "",
           "### Run cutscene every tick ###",
           # Check that global timer has incremented since the last time the function was ran; force-quit the cutscene if it's run multiple times in the same tick
-          f"scoreboard players operation global_timer {self.objective} -= t Tt2GlobalTimer",
+          f"execute store result score temp {self.objective} run time query gametime",
+          f"scoreboard players operation global_timer {self.objective} -= temp {self.objective}",
           f"execute if score global_timer {self.objective} matches 0 run scoreboard players set {self.forcequit} {self.objective} 1",
-          f"scoreboard players operation global_timer {self.objective} = t Tt2GlobalTimer",
+          f"scoreboard players operation global_timer {self.objective} = temp {self.objective}",
           # Schedule function if not over and not forcequit
           f"execute unless score {self.end_name} {self.objective} matches 1 unless score {self.forcequit} {self.objective} matches 1 run schedule function {self.function_name} 1t replace"
           # Maybe we want to set this up so that if the cutscene runs multiple times it only resets the extras? Might be more resilient to glitches then
