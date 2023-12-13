@@ -53,7 +53,7 @@ Currently supported commands:
 `duration` does not update the cutscene timer; the contents of a `duration` block will run in parallel with any code following the `duration` block. Consequently, it is not (currently) supported to have an `if` block overlapping a `duration` block; make sure any `duration`s have concluded before you open an `if`.
 
 ## if / else
-`if` runs a subcutscene based on an `execute condition``. An execute condition `execute if` subcommand. The above example uses `score Lemmata Stats matches 20..`, which is a condition that might appear in a command like `execute if score Lemmata Stats matches 20.. run ...`.
+`if` runs a subcutscene based on an `execute condition`. An execute condition `execute if` subcommand. The above example uses `score Money Stats matches 20..`, which is a condition that might appear in a command like `execute if score Money Stats matches 20.. run ...`.
 
 `else` works the same as `if`, but it evaluates the condition as its opposite
 
