@@ -3,6 +3,8 @@ MiCufunction is a .mcfunction scripting language compiled using Python3. It main
 
 To compile, run `MiCufunction.py [file path to .micufunction file] [root data pack folder]` on a command line. Xero has some scripts for automatically pulling a data pack from GitHub and compiling all of the .micufunction files in it which you can probably ask him for if you want. 
 
+I've made [VSCode syntax highlighting](https://github.com/AprilKopec/language-micufunction) for .micufunction files.
+
 Here is an example .micufunction:
 ```
 function test:test1 {
