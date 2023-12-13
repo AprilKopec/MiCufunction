@@ -4,9 +4,8 @@ from typing import Union
 import re
 from math import atan2, degrees, sqrt
 
-@MutableMapping
-class Scope:
-    def __init__(self):
+class Scope(MutableMapping):
+    def __init__(self, *args, **kwargs):
         self.var_dict = {}
 
     def __getitem__(self, var_name: str):

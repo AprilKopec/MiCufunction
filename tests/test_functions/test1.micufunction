@@ -1,0 +1,13 @@
+function test:test1 {
+    say <Character A> Hello!
+    # This is a comment
+    wait 10
+    duration 30t {
+        command execute as @a at @s run tp @s ~ ~1 ~
+    }
+    if score Money Stats matches 20.. {
+        say You upgraded your item!
+    } else {
+        say You cannot afford to upgrade your item.
+    }
+}
