@@ -78,6 +78,10 @@ def get_default_function_name(filename):
             break
     assert namespace_index >= 0, "No file name provided, and unable to make a default name by looking at .micufunction file's location in datapack"
     unsplit = split[namespace_index] + ":" + "/".join(split[namespace_index+2:])
+
+    assert unsplit.lower().endswith(".micufunction")
+    unsplit=unsplit[:-len(".micufunction")]
+
     return unsplit
 
 def main():
