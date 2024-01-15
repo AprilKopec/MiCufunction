@@ -4,6 +4,13 @@ from typing import Union
 import re
 from math import atan2, degrees, sqrt
 
+def get_filename(function_name) -> str:
+        address = re.split(r'[:/]', function_name)
+        address.insert(1, "functions")
+        address[-1] += ".mcfunction"
+        address = "/".join(address)
+        return "data/" + address
+
 class Scope(MutableMapping):
     def __init__(self, *args, **kwargs):
         self.var_dict = {}
