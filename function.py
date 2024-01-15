@@ -5,6 +5,7 @@ class Function(Control_Flow):
     takes_block = True
     has_filename = True
     def __init__(self, stack, line, args) -> None:
+        self.function_name = args[1]
         self.filename = get_filename(args[1])
         self.camera = Camera_Position(0, 0, 0)
 
@@ -15,7 +16,7 @@ class Function(Control_Flow):
         super().__init__(stack, line, args)
 
     def get_objective(self) -> Objective:
-        return Objective(self.args[1].replace(":",".").replace("/","."))
+        return Objective(self.function_name.replace(":",".").replace("/","."))
 
     
 
