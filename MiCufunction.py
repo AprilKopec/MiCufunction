@@ -30,7 +30,7 @@ class Program:
     def __init__(self, default_file) -> None:
         self.stack = []
         self.outlines = {}
-        self.current_file = [default_file]
+        self.current_file = [get_filename(default_file)]
 
         implicit_func_line = "function " + default_file + " {"
         self.functions = [Function(self.stack, implicit_func_line, implicit_func_line.split(" "))]
