@@ -69,7 +69,7 @@ class Program:
         self.add_command("}", -1)
 
 
-def get_default_file(filename):
+def get_default_function_name(filename):
     split = filename.split("/")
     namespace_index = -1
     for i in range(len(split)):
@@ -77,10 +77,8 @@ def get_default_file(filename):
             namespace_index = i - 1
             break
     assert namespace_index >= 0, "No file name provided, and unable to make a default name by looking at .micufunction file's location in datapack"
-    unsplit = filename[namespace_index] + ":" + filename[namespace_index+1:].join("/")
+    unsplit = split[namespace_index] + ":" + "/".join(split[namespace_index+2:])
     return unsplit
-
-
 
 def main():
     FILENAME = sys.argv[1]
@@ -90,7 +88,7 @@ def main():
 
     with open(FILENAME, 'r', encoding='utf-8') as infile:
         lines = infile.readlines()
-        program = Program(get_default_file(FILENAME))
+        program = Program(get_default_function_name(FILENAME))
         for i in range(len(lines)):
             program.add_command(lines[i], i+1)
         program.end()
