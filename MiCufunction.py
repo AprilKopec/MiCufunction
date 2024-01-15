@@ -29,11 +29,13 @@ class Program:
 
     def __init__(self, default_file) -> None:
         self.stack = []
+        self.functions = []
         self.outlines = {}
         self.current_file = [get_filename(default_file)]
 
         implicit_func_line = "function " + default_file + " {"
-        self.functions = [Function(self.stack, implicit_func_line, implicit_func_line.split(" "))]
+        self.add_command(implicit_func_line, -1)
+
 
     def add_command(self, line: str, line_num: int):
         line = line.strip()
@@ -62,7 +64,7 @@ class Program:
             self.stack.append(item)
 
     def end(self):
-        assert len(self.stack) == 1, "The length of the function stack should be 1 when the line ends"
+        assert len(self.current_file) == 1, "The length of the function stack should be 1 when the file ends"
         self.add_command("}", -1)
 
 
