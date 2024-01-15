@@ -61,7 +61,7 @@ class Program:
             assert args[-1] == "{", f"Error on line {line_num}: Missing {{"
             self.stack.append(item)
 
-    def end_program(self):
+    def end(self):
         assert len(self.stack) == 1, "The length of the function stack should be 1 when the line ends"
         self.add_command("}", -1)
 
@@ -90,6 +90,7 @@ def main():
         program = Program(get_default_file(FILENAME))
         for i in range(len(lines)):
             program.add_command(lines[i], i+1)
+        program.end()
         for filename, lines in program.outlines.items():
             root = pathlib.Path(sys.argv[2])
             path = root.joinpath(filename)
