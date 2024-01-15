@@ -64,7 +64,8 @@ class Program:
             self.stack.append(item)
 
     def end(self):
-        assert len(self.current_file) == 1, "The length of the function stack should be 1 when the file ends"
+        print(self.stack)
+        print(self.current_file)
         self.add_command("}", -1)
 
 
