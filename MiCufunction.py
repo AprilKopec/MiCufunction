@@ -64,8 +64,6 @@ class Program:
             self.stack.append(item)
 
     def end(self):
-        print(self.stack)
-        print(self.current_file)
         self.add_command("}", -1)
 
 
