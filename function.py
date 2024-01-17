@@ -45,9 +45,15 @@ class Function(Control_Flow):
           "",
           "### Run cutscene every tick ###",
           # Check that global timer has incremented since the last time the function was ran; force-quit the cutscene if it's run multiple times in the same tick
-          f"execute store result score temp {self.objective} run time query gametime",
+          #
+          # I tried doing this to use the global timer, but it doesn't work if the game lags:
+          # f"execute store result score temp {self.objective} run time query gametime",
+          #
+          # In the future I'd like to change this to not be hardcoded to something TT2 specific, somehow
+          f"scoreboard players operation temp {self.objective} = t TT2GlobalTimer",
           f"scoreboard players operation global_timer {self.objective} -= temp {self.objective}",
           f"execute if score global_timer {self.objective} matches 0 run scoreboard players set {self.forcequit} {self.objective} 1",
+          f"execute if score {self.forcequit} {self.objective} matches 1 run say timer failsafe triggered for {self.objective}",
           f"scoreboard players operation global_timer {self.objective} = temp {self.objective}",
           # Schedule function if not over and not forcequit
           f"execute unless score {self.end_name} {self.objective} matches 1 unless score {self.forcequit} {self.objective} matches 1 run schedule function {self.function_name} 1t replace"
