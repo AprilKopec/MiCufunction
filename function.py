@@ -39,7 +39,8 @@ class Function(Control_Flow):
           "",
           "### Cutscene Cleanup ###",
           # End the function after the last event ends
-          f'execute if score {self.timer_name} {self.objective} matches {self.latest_time} run scoreboard players set {self.end_name} {self.objective} 1',
+          f'execute if score {self.timer_name} {self.objective} matches {self.latest_time}.. run scoreboard players set {self.end_name} {self.objective} 1',
+          f'execute if score {self.timer_name} {self.objective} matches {self.latest_time+1}.. run say warning: cutscene {self.objective} was running multiple times per tick',
           # Reset the timer for next time function is used
           f'execute if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.timer_name} {self.objective} 0',
           "",
@@ -50,11 +51,12 @@ class Function(Control_Flow):
           # f"execute store result score temp {self.objective} run time query gametime",
           #
           # In the future I'd like to change this to not be hardcoded to something TT2 specific, somehow
-          f"scoreboard players operation temp {self.objective} = t TT2GlobalTimer",
-          f"scoreboard players operation global_timer {self.objective} -= temp {self.objective}",
-          f"execute if score global_timer {self.objective} matches 0 run scoreboard players set {self.forcequit} {self.objective} 1",
-          f"execute if score {self.forcequit} {self.objective} matches 1 run say timer failsafe triggered for {self.objective}",
-          f"scoreboard players operation global_timer {self.objective} = temp {self.objective}",
+          # Edit: actually this was still not working it so we decided to disable it entirely and add a check for if the cutscene is past the end time
+          #f"scoreboard players operation temp {self.objective} = t TT2GlobalTimer",
+          #f"scoreboard players operation global_timer {self.objective} -= temp {self.objective}",
+          #f"execute if score global_timer {self.objective} matches 0 run scoreboard players set {self.forcequit} {self.objective} 1",
+          #f"execute if score {self.forcequit} {self.objective} matches 1 run say timer failsafe triggered for {self.objective}",
+          #f"scoreboard players operation global_timer {self.objective} = temp {self.objective}",
           # Schedule function if not over and not forcequit
           f"execute unless score {self.end_name} {self.objective} matches 1 unless score {self.forcequit} {self.objective} matches 1 run schedule function {self.function_name} 1t replace"
           # Maybe we want to set this up so that if the cutscene runs multiple times it only resets the extras? Might be more resilient to glitches then
