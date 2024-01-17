@@ -1,4 +1,4 @@
-from utils import Objective, Camera_Position, get_filename
+from utils import Objective, Camera_Position, get_filename, Time
 from command_baseclass import Control_Flow
 
 class Function(Control_Flow):
@@ -40,7 +40,7 @@ class Function(Control_Flow):
           "### Cutscene Cleanup ###",
           # End the function after the last event ends
           f'execute if score {self.timer_name} {self.objective} matches {self.latest_time}.. run scoreboard players set {self.end_name} {self.objective} 1',
-          f'execute if score {self.timer_name} {self.objective} matches {self.latest_time+1}.. run say warning: cutscene {self.objective} was running multiple times per tick',
+          f'execute if score {self.timer_name} {self.objective} matches {self.latest_time + Time(1)}.. run say warning: cutscene {self.objective} was running multiple times per tick',
           # Reset the timer for next time function is used
           f'execute if score {self.end_name} {self.objective} matches 1 run scoreboard players set {self.timer_name} {self.objective} 0',
           "",
