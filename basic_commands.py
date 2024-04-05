@@ -1,6 +1,10 @@
 from utils import Time
 from command_baseclass import MiCufunction_Command
 from typing import List
+import re
+
+def escape(input):
+    return re.sub("[\\\"\']", "\\\\\\g<0>", input)
 
 def rest(string, n: int = 1) -> str:
     return string.split(" ", n)[n]
@@ -21,7 +25,7 @@ class Basic_Command(MiCufunction_Command):
 
 class Say(Basic_Command):
     def get_text(self):
-        return [self.add_prefix(f'tellraw @a "{rest(self.line)}"')]
+        return [self.add_prefix(f'tellraw @a "{escape(rest(self.line))}"')]
 
 class Command(Basic_Command):
     def get_text(self):
