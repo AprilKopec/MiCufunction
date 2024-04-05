@@ -4,7 +4,7 @@ from typing import List
 import re
 
 def escape(input):
-    return re.sub("[\\\"\']", "\\\\\\g<0>", input)
+    return re.sub("[\\\"]", "\\\\\\g<0>", input)
 
 def rest(string, n: int = 1) -> str:
     return string.split(" ", n)[n]
