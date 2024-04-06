@@ -38,7 +38,7 @@ class Wait(Basic_Command):
             try:
                 self.timekeeper.time += Time(self.args[1])
             except:
-                raise ValueError("Valid arguments for 'wait' are 'until', 'while', or a duration.")
+               raise ValueError("Valid arguments for 'wait' are 'until', 'while', or a duration.")
 
     def get_text(self):
         if(self.args[1] in ["until", "while"]):
@@ -52,8 +52,8 @@ class Wait(Basic_Command):
 
             text1 = [
                 f'scoreboard players set {pause_name} {objective} 1',
-                f'scoreboard players set temp {objective} 0'
-                f'execute if {rest(self.line,2)} run scoreboard players set temp {objective} 1'
+                f'scoreboard players set temp {objective} 0',
+                f'execute if {rest(self.line,2)} run scoreboard players set temp {objective} 1',
                 f'execute if score temp {objective} matches {b} run scoreboard players set {pause_name} {objective} 0',
                 f'execute if score temp {objective} matches {b} run scoreboard players add {timer_name} {objective} 1'
             ]
