@@ -80,4 +80,5 @@ class Else(If):
         Control_Flow.__init__(self, if_block.stack, if_block.line, if_block.args)
 
     def begin(self) -> list[str]:
+        self.camera = copy(self.parent.camera)
         return [""]
